@@ -1,0 +1,28 @@
+# rustfmt configuration template
+# Copy this file to your project root.
+#
+# Stable options work with `cargo fmt` on stable Rust.
+# Nightly options (commented out) require `cargo +nightly fmt`.
+
+# === Stable Options ===
+
+# Rust edition — match your Cargo.toml edition
+edition = "2021"
+
+# Maximum line width before wrapping
+max_width = 100
+
+# Indentation width
+tab_spaces = 4
+
+# Use tabs instead of spaces
+hard_tabs = false
+
+# Heuristics for deciding when to break lines for sub-expressions
+use_small_heuristics = "Default"
+
+# === Nightly Options ===
+# Uncomment these if using `cargo +nightly fmt`
+
+# Merge imports sharing the same root: `use std::{collections::HashMap, sync::Arc};`
+# imports_granularity = "Crate"

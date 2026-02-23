@@ -26,6 +26,8 @@ cd ~/project/claude-code-agents
 | 에이전트 | 명령어 | 설명 |
 |---------|--------|------|
 | Svelte 5 | `/svelte5` | Svelte 5 runes 문법, SvelteKit 패턴, 컴포넌트 생성, 코드 리뷰, 디버깅 |
+| Rust Axum Backend | `/rust-axum-backend` | Axum 0.8.x API 라우팅, 핸들러/추출기 패턴, serde 직렬화, 요청 검증, utoipa OpenAPI 문서화, 에러 처리, 프로젝트 구조 |
+| Rust Style | `/rust-style` | 프레임워크 무관 Rust 스타일 컨벤션 — use 정렬, 모듈 구조, 네이밍, 에러 설계, 문서화, 관용 패턴 |
 
 ## 에이전트 추가 방법
 
@@ -40,4 +42,12 @@ cd ~/project/claude-code-agents
 /svelte5 Counter 컴포넌트 만들어줘
 /svelte5 이 코드 리뷰해줘
 /svelte5 $effect 사용법 알려줘
+
+/rust-axum-backend CRUD API 핸들러 만들어줘
+/rust-axum-backend 프로젝트 구조 잡아줘
+/rust-axum-backend OpenAPI 문서화 추가해줘
+
+/rust-style 이 파일 스타일 리뷰해줘
+/rust-style src/ 디렉토리 import 정리해줘
+/rust-style rustfmt, Clippy 설정 잡아줘
 ```
