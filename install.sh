@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$HOME/.claude/skills"
 
 # Skill directories to install (add new ones here)
-SKILLS=(svelte5)
+SKILLS=(svelte5 rust-axum-backend rust-style)
 
 usage() {
   echo "Usage: $0 [install|uninstall]"
