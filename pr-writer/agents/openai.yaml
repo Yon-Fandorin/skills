@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Writer"
+  short_description: "Draft and refine PRs with grounded evidence"
+  default_prompt: "Use $pr-writer to write or revise this pull request title and body from the actual changes and validation evidence."
