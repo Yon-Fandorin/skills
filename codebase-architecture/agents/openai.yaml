@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codebase Architecture"
+  short_description: "Design module ownership and dependency boundaries"
+  default_prompt: "Use $codebase-architecture to organize this codebase using its existing architecture decisions and actual dependencies."

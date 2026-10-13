@@ -1,48 +1,43 @@
-# Maintenance evidence
+# PR Writer Lessons
 
-This record explains reusable changes to the skill. It is not a required input
-for normal PR writing and does not store production incident data.
+Keep reusable writing and verification principles here. Store specific PRs,
+evaluation runs, test counts, and authoring history in private review records.
 
-## 2026-10-12 — Draft and edit comparison
+## Choose the representation while drafting
 
-An authoring session compared an initial PR body with its edited version. The
-edited body put repeated input-policy conditions in a table and grouped checks
-by their evidence scope. The reader found it clearer. The installed skill
-already required both drafting and whole-document editing, so this comparison
-supports applying those instructions earlier; it does not prove that a new
-skill outperforms the old one.
+Use a table when repeated input-policy conditions are easier to compare there.
+Group checks by what their evidence establishes. A short, clear change can remain
+prose; a template does not require every heading for every PR.
 
-- Make representation choice part of drafting, with an optional worked example.
-- Reconcile policy semantics and evidence scope after editing. Required values,
-  defaults, sentinel normalization, existing values, and execution exclusions
-  are easy to accidentally broaden while shortening text.
-- Pin the prose editor through a Git submodule; keep the editing pass executable
-  when its checkout is uninitialized.
-- Keep repository rules and incident facts in their actual sources. Examples use
-  fictional values and counts, not customer identifiers or operational logs.
+## Preserve meaning during editing
 
-Calibration sources:
+Reconcile required values, defaults, sentinel normalization, unchanged values,
+and execution exclusions after shortening the text. Keep repository policy and
+incident facts in their actual sources. Worked examples use fictional values
+and counts rather than customer identifiers or operational logs.
 
-- [AI Hero: writing-for-agents](https://www.aihero.dev/skills-writing-for-agents)
-- [AI Hero: pr](https://www.aihero.dev/skills-pr)
+## Keep evidence traceable
+
+Distinguish added regression cases from existing cases and suite totals, and
+skipped cases from tests excluded from execution. Keep code inspection, supplied
+prior results, fresh test execution, and live verification separate.
+
+Record the relevant source revision and environment with the evidence when
+available. If a supplied result has no source revision, state that limitation
+instead of treating it as a new run or a certified check of the commit.
+
+## Keep editing portable
+
+Pin a shared editor through the repository's Git submodule and retain the
+native editing pass when its checkout is unavailable. The editor must preserve
+the caller's output language, scope, facts, and publication authority.
 
 Structural validation does not establish writing quality. Fresh-context review
-and an execution exercise should report their actual evidence and limits.
+and execution exercises should report their actual coverage and limits. One case
+does not establish comparative performance or exercise every change type and
+publishing path.
 
-## 2026-10-12 — Fresh-context checks
+## Authoring sources
 
-Two agents started without the authoring conversation. One applied the repository's
-skill-reviewer criteria and current AI Hero exemplars to the package and returned
-Ready with no Major or Minor findings. It checked the type routes, publication
-branch, embedded editor binding, metadata, and pinned gitlink.
-
-The other used the skill to draft a Korean bugfix PR from a real commit, its
-parent, the repository template, code, and existing test artifacts. Its output
-kept conditional input behavior in a table, distinguished 35 added regression
-cases from the suite's 2,182 passes and 4 skips, separated inspection from test
-evidence, and disclosed the excluded live test. It reported no skill defect.
-
-This is one execution case, not a comparative benchmark or evidence that every
-change type and remote publishing path has been exercised. The existing test
-artifacts lacked a source SHA; the agent reported them as supplied prior results,
-not a new execution or an independently certified check of the commit bytes.
+- [Writing for agents](https://www.aihero.dev/skills-writing-for-agents)
+- [PR writing](https://www.aihero.dev/skills-pr)
