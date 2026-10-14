@@ -41,6 +41,19 @@ pub kind: KindRef,
 - Group imports, contracts, implementation, and test declarations so each region has a clear role. Tests follow the local separate-file or end-of-file convention when applicable; no single language's order is universal.
 - Preserve observable ordering when moving declarations or statements, including initialization, routing, enum representations, and side effects. Formatting alone does not establish a readable order.
 
+## Readability
+
+Review changed code in context, following repository conventions.
+
+- Let the formatter handle indentation and wrapping. Use blank lines sparingly between logical steps; keep related statements together.
+- Use names that reveal purpose, with units where ambiguity matters. Name dense expressions when that reduces rereading; do not add intermediates or helpers solely to shorten code.
+- Make the normal path easy to trace; use guard clauses when they clarify branching. Preserve short-circuiting, evaluation count/order, cleanup, and errors in any readability refactor.
+- Group related fields when order is unconstrained. Preserve positional interfaces, initialization dependencies, and observable validation, schema, or serialization order.
+
+Keep corrections within scope. A readability finding needs a concrete reader difficulty and the smallest useful correction; treat preference-only suggestions as optional.
+
+References: [PEP 8](https://peps.python.org/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds), [Prettier rationale](https://prettier.io/docs/rationale#empty-lines), [Google code review](https://google.github.io/eng-practices/review/reviewer/looking-for.html#complexity).
+
 ## Verification
 
 Use the repository-pinned toolchain and repository-provided gates when present. When the repository is silent, run the formatter or style check, compile or static check, and nearest meaningful tests that are conventional for the changed language and target. Do not introduce a new toolchain or project-wide gate merely to verify a scoped change.

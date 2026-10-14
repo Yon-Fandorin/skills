@@ -9,7 +9,7 @@ $codewright로 현재 변경의 코드 배치와 가독성을 검토해줘.
 
 검토만 요청하면 파일을 수정하지 않는다. 실행 규칙과 언어·프레임워크별 참조는 [SKILL.md](SKILL.md), 언어·배치 승인 설정은 [저장소 프로필](references/repository-language-profile.md)을 따른다.
 
-설치는 [저장소 안내](../README.md#설치)를 참고한다.
+설치는 [저장소 안내](https://github.com/Yon-Fandorin/skills#설치)를 참고한다.
 
 ## 처음 사용하기
 

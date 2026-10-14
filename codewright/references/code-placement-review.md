@@ -39,10 +39,11 @@ document or an exhaustive tree.
 ## Reading Flow
 
 Apply the baseline's [Declaration Order](default-contribution-rules.md#declaration-order)
-rules to the whole changed region, including the declaration immediately before
-and after it. Inspect imports, types/schemas/conversions, related operations,
-helpers, and tests; a correct directory does not settle this pass. Keep local
-conventions when they provide a clear reading flow.
+and [Readability](default-contribution-rules.md#readability) rules to the whole
+changed region, including the declaration immediately before and after it.
+Inspect imports, types/schemas/conversions, related operations, helpers, and tests;
+a correct directory does not settle this pass. Keep local conventions when they
+provide a clear reading flow.
 
 ## Review Result
 
