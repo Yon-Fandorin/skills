@@ -67,6 +67,12 @@
 | `external/humanizer/SKILL.md` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/agents/openai.yaml` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/scripts/validate-package.py` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
+| `project-guide/SKILL.md` | 호출 조건·스킬 인계·권한·완료 기준 |
+| `project-guide/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
+| `project-guide/references/completion-review.md` | 프레시 컨텍스트 검수·수정 후 재검수·완료 조건·증거 |
+| `project-guide/references/git-workflow.md` | Git 적용 조건·드래프트 PR·CI/CD 명시적 승인·기존 자동화 보존 |
+| `project-guide/references/project-types.md` | 유형 선택 조건·미확인 유형·확장 기준 |
+| `project-guide/references/project-types/software.md` | 소프트웨어 기여 지침·개발 스킬 연결·검증 범위 |
 | `pr-writer/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
 | `pr-writer/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
 | `pr-writer/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
