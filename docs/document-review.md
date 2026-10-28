@@ -20,6 +20,10 @@
 | `.gitmodules` | 외부 원본 URL·서브모듈 경로 |
 | `AGENTS.md` | 소유·언어·검토 범위·기록 보관 규칙 |
 | `README.md` | 역할·호출·설치·예제·현재 문서 연결 |
+| `agents-writer/SKILL.md` | AGENTS.md 작성·검토·범위·근거·완료 기준 |
+| `agents-writer/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
+| `agents-writer/references/drafting-support.md` | 선택형 작성 보조·근거별 선별·예시·정지 조건 |
+| `agents-writer/references/official-guidance.md` | 공식 출처·도구별 로딩 차이·로컬 정책 구분 |
 | `codebase-architecture/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
 | `codebase-architecture/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
 | `codebase-architecture/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |

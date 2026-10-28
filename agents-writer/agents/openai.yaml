@@ -1,0 +1,3 @@
+interface:
+  display_name: "Agents Writer"
+  short_description: "Write concise, grounded AGENTS.md instructions"

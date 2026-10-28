@@ -5,9 +5,12 @@
 | 스킬 | 역할 | 호출 |
 |------|------|------|
 | [Codebase Architecture](codebase-architecture/README.md) | 책임·모듈 배치·의존 경계 설계와 검토 | `$codebase-architecture` |
+| [Agents Writer](agents-writer/SKILL.md) | 근거에 맞는 간결한 AGENTS.md 작성·정리·검토 | `$agents-writer` |
 | [Codewright](codewright/README.md) | 코드 작성·리팩터링·검토 | `$codewright` |
 | [PR Writer](pr-writer/README.md) | PR 제목·본문 작성과 편집 | `$pr-writer` |
 | [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조 검토 | `$skill-reviewer` |
+
+Agents Writer는 AGENTS.md 작성·정리·검토에 맞으면 자동 선택될 수 있다. 기본 지침은 짧게 유지하고, 판단 보조가 필요할 때만 작성 예시·점검 절차를 읽는다. 공식 출처와 도구별 로딩 차이는 별도 참조로 구분한다.
 
 Codebase Architecture는 구조 설계·검토 작업에 맞으면 자동 선택될 수 있다. Codewright와 Skill Reviewer는 명시적으로 호출한다. PR Writer는 작업에 맞으면 자동 선택될 수 있다.
 
@@ -19,6 +22,7 @@ Codebase Architecture는 구조 설계·검토 작업에 맞으면 자동 선택
 git clone --recurse-submodules https://github.com/Yon-Fandorin/skills.git ~/.yon-skills
 mkdir -p ~/.agents/skills
 ln -s ~/.yon-skills/codebase-architecture ~/.agents/skills/codebase-architecture
+ln -s ~/.yon-skills/agents-writer ~/.agents/skills/agents-writer
 ln -s ~/.yon-skills/codewright ~/.agents/skills/codewright
 ln -s ~/.yon-skills/pr-writer ~/.agents/skills/pr-writer
 ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
@@ -32,7 +36,7 @@ ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
 공용 Humanizer 없이 각 스킬의 기본 편집 규칙을 사용하려면 [skills CLI](https://github.com/vercel-labs/skills)로 설치할 수 있다. 전체 저장소 설치와 개별 설치 중 하나를 선택한다.
 
 ```bash
-npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture codewright pr-writer skill-reviewer
+npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture agents-writer codewright pr-writer skill-reviewer
 ```
 
 다른 에이전트에서는 `-a codex`를 해당 에이전트 이름으로 바꾸거나, 이 옵션을 빼고 설치 중 선택한다.
