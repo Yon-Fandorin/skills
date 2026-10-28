@@ -16,15 +16,22 @@ and execution exclusions after shortening the text. Keep repository policy and
 incident facts in their actual sources. Worked examples use fictional values
 and counts rather than customer identifiers or operational logs.
 
+The final base-to-head comparison owns the PR's scope. Review fixes may retire
+earlier explanations and checks. Retain relevant before/after and shipped-state
+consequences while removing the author's intermediate implementation history.
+
 ## Keep evidence traceable
 
-Distinguish added regression cases from existing cases and suite totals, and
-skipped cases from tests excluded from execution. Keep code inspection, supplied
-prior results, fresh test execution, and live verification separate.
+Select evidence for the review decision before editing prose. Summarize the
+relevant behavior and outcome; keep detailed commands, counts, and execution
+history in private records unless they affect confidence or reproduction.
+If counts are included, distinguish added cases from suite totals and skipped
+cases from tests excluded from execution. Keep material limits visible.
 
-Record the relevant source revision and environment with the evidence when
-available. If a supplied result has no source revision, state that limitation
-instead of treating it as a new run or a certified check of the commit.
+Record source revision and environment privately when available. A supplied
+result without a known revision does not certify the current commit. Disclose
+that limit when it affects a retained claim; an accurate concise summary need
+not reproduce the provenance ledger.
 
 ## Keep editing portable
 

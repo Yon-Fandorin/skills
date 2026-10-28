@@ -35,22 +35,44 @@ request → validate → mutate price → publish event → save
 Include only boundaries supported by the actual path. A response-and-DB test
 does not by itself prove event ordering; label inspection evidence accordingly.
 
-## Validation scope
+## Validation summary
 
-Suppose an execution artifact records 9 added regression cases and 2 existing
-focused cases passing. A suite artifact records 100 passes and 3 skips, while an
-external-service test was excluded from execution.
+Suppose logs contain individual test names, reruns, suite totals, and temporary
+paths. The relevant result is that a regression check now preserves an explicit
+zero value and the focused checks pass. Live external-service behavior was not
+tested and matters to the review.
 
-A compact report preserves those distinctions:
+A suitable summary is:
 
-- Focused checks: 9 added regression cases plus 2 existing cases passed;
-  responses and persisted state were checked.
-- Suite: 100 passed and 3 skipped under the recorded environment;
-  the external-service test was excluded from execution.
+> The zero-value regression check and related local checks pass. Live
+> external-service integration remains unverified.
 
-“11 new tests passed” overstates the additions. “All tests passed” hides the
-skips and exclusion. Include execution conditions when they affect confidence
-or reproduction; keep incidental investigation logs in the private ledger.
+The reviewer learns what is supported and what remains uncertain without the
+execution transcript. Omit counts and test-file inventories unless they change
+the review decision. If a repository template requires commands, keep the
+relevant command and result in its required field. A regression check not run
+must remain unverified, even when shortening the text. Do not summarize a
+partially checked change as "all tests passed."
+
+## Review revisions
+
+Suppose the comparison base uses a truthiness fallback that replaces explicit
+zero with a default. An intermediate draft rejected zero, but review fixes
+removed that validation; the final patch defaults only an unspecified value.
+
+An appended update leaves conflicting descriptions:
+
+> Zero is rejected. After review, we changed validation to accept zero instead.
+
+Rewrite from the final comparison:
+
+> Explicit zero now remains zero instead of becoming the default. Only an
+> unspecified value uses the default.
+
+The intermediate rejection is not part of the final change. If it had shipped
+and required a migration or affected users, retain that operational consequence
+instead of deleting relevant history. Any test result for the rejected-value
+draft must be revalidated or left unverified for the final patch.
 
 ## Dense existing body
 
@@ -59,7 +81,8 @@ When revising an existing description:
 1. Keep the concrete problem and resulting behavior in the opening.
 2. Consolidate repeated conditions or mappings into one comparison.
 3. Keep supporting fixture/configuration rationale where its purpose is unclear.
-4. Place limits beside the checks they qualify, then compare claims with sources.
+4. Place limits beside the checks they qualify, then compare claims with the
+   final diff and applicable sources, including changes made during review.
 
 A small change that is already clear can keep its short prose form. The purpose
 of editing is easier comprehension with the same supported meaning.

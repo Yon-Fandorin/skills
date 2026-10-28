@@ -10,13 +10,12 @@ Explain the direct technical cause and why the existing behavior allowed it. Sep
 
 Explain how the correction addresses the cause and what safety properties it adds. Make condition-to-outcome rules and important execution boundaries easy to scan.
 
-# Regression Test
-
-Describe the scenario that reproduces the bug and the assertion that now prevents recurrence.
-
 # Validation
 
-Present the regression and compatibility evidence, grouped by meaningful validation scope.
+Summarize the reproducing scenario, what the regression check establishes, and
+the relevant result or verification gap. Cover compatibility when it affects
+the fix. Give this evidence one home rather than repeating it in separate test
+and validation sections.
 
 # Reviewer Guide
 

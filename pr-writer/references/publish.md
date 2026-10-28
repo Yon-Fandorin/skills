@@ -11,6 +11,17 @@ Use this reference when the user has requested PR creation or modification. The 
 
 ## Apply and verify
 
+Before posting, confirm the title and body were reconciled with the current
+base-to-head comparison. If review fixes or branch changes made them stale,
+refresh the claims and evidence through the final-state self-review first.
+
+Create new PRs as drafts. With GitHub CLI, use `gh pr create --draft`. If the
+host cannot create a draft, report the limitation instead of creating a ready
+PR. Promote a draft only when the user explicitly requests it; passing checks
+or a completed review does not grant that authority. For an existing PR,
+preserve its draft state during title/body edits unless a state change is
+explicitly requested.
+
 Use structured title/body arguments where available. With a CLI, put the exact Markdown in a file and pass its body-file option to preserve newlines and literal text.
 
-Read back the PR title, body, base, head, and labels after the operation. Compare with the intended artifact and metadata; verify the included change scope when creating a PR or changing branches. Correct mismatches within the authorized request and report any remaining limitation. Completion requires the published result, not merely a successful write command.
+Read back the PR title, body, base, head, labels, and draft state after the operation. Compare with the intended artifact and metadata; verify the included change scope when creating a PR or changing branches. Correct mismatches within the authorized request and report any remaining limitation. Completion requires the published result, not merely a successful write command.
