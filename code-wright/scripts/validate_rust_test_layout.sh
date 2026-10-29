@@ -3,7 +3,7 @@ set -euo pipefail
 
 skill_dir="$(cd "$(dirname "$0")/.." && pwd)"
 fixture_dir="$skill_dir/fixtures/rust-test-layout"
-temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/codewright-rust-test-layout.XXXXXX")"
+temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/code-wright-rust-test-layout.XXXXXX")"
 target_dir="$temp_dir/target"
 
 cleanup() {

@@ -112,10 +112,10 @@ tracking rules. Follow the user's language for the explanation.
 
 ## Hand off and verify
 
-This skill owns the structure contract. Codewright, when available, owns scoped
+This skill owns the structure contract. Code Wright, when available, owns scoped
 implementation, code clarity, language conventions, and regression verification.
 Pass it the contract, affected paths, and preserved behavior; do not require it
-to rediscover approved owners. This skill also works without Codewright: an
+to rediscover approved owners. This skill also works without Code Wright: an
 implementer can follow the same contract using repository rules.
 
 Return to the structure decision only when implementation reveals a concrete

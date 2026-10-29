@@ -7,7 +7,7 @@
 | [Codebase Architecture](codebase-architecture/README.md) | 책임·모듈 배치·의존 경계 설계와 검토 | `$codebase-architecture` |
 | [Project Guide](project-guide/SKILL.md) | 프로젝트 파악·유형별 기여 및 관리 지침 선택 | `$project-guide` |
 | [Agents Writer](agents-writer/SKILL.md) | 근거에 맞는 간결한 AGENTS.md 작성·정리·검토 | `$agents-writer` |
-| [Codewright](codewright/README.md) | 코드 작성·리팩터링·검토 | `$codewright` |
+| [Code Wright](code-wright/README.md) | 코드 작성·리팩터링·검토 | `$code-wright` |
 | [PR Writer](pr-writer/README.md) | PR 제목·본문 작성과 편집 | `$pr-writer` |
 | [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조 검토 | `$skill-reviewer` |
 
@@ -15,7 +15,7 @@ Project Guide는 프로젝트 지침·관리 체계를 정리할 때 자동 선�
 
 Agents Writer는 AGENTS.md 작성·정리·검토에 맞으면 자동 선택될 수 있다. 기본 지침은 짧게 유지하고, 판단 보조가 필요할 때만 작성 예시·점검 절차를 읽는다. 공식 출처와 도구별 로딩 차이는 별도 참조로 구분한다.
 
-소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Codewright로 연결한다. Codebase Architecture와 PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Codewright와 Skill Reviewer는 명시적으로 호출한다.
+소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture와 PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Code Wright와 Skill Reviewer는 명시적으로 호출한다.
 
 ## 설치
 
@@ -27,7 +27,7 @@ mkdir -p ~/.agents/skills
 ln -s ~/.yon-skills/codebase-architecture ~/.agents/skills/codebase-architecture
 ln -s ~/.yon-skills/project-guide ~/.agents/skills/project-guide
 ln -s ~/.yon-skills/agents-writer ~/.agents/skills/agents-writer
-ln -s ~/.yon-skills/codewright ~/.agents/skills/codewright
+ln -s ~/.yon-skills/code-wright ~/.agents/skills/code-wright
 ln -s ~/.yon-skills/pr-writer ~/.agents/skills/pr-writer
 ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
 ```
@@ -40,7 +40,7 @@ ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
 공용 Humanizer 없이 각 스킬의 기본 편집 규칙을 사용하려면 [skills CLI](https://github.com/vercel-labs/skills)로 설치할 수 있다. 전체 저장소 설치와 개별 설치 중 하나를 선택한다.
 
 ```bash
-npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer codewright pr-writer skill-reviewer
+npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer code-wright pr-writer skill-reviewer
 ```
 
 다른 에이전트에서는 `-a codex`를 해당 에이전트 이름으로 바꾸거나, 이 옵션을 빼고 설치 중 선택한다.
@@ -55,6 +55,8 @@ npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architect
 git -C ~/.yon-skills pull --ff-only
 git -C ~/.yon-skills submodule update --init --recursive
 ```
+
+기존 `codewright` 설치는 [설치](#설치) 안내에 따라 `code-wright`로 다시 연결하거나 설치하고 이전 항목을 제거한다. 심볼릭 링크 설치에서는 저장소를 갱신해도 `~/.agents/skills/codewright` 링크가 자동으로 바뀌지 않는다. 프로젝트 설정 파일 `.codewright.toml`은 계속 사용한다.
 
 ## Humanizer
 

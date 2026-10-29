@@ -1,0 +1,6 @@
+interface:
+  display_name: "Code Wright"
+  short_description: "Implement or review scoped code with repository rules"
+  default_prompt: "Use $code-wright to implement or review this change under the repository contribution rules."
+policy:
+  allow_implicit_invocation: false

@@ -1,15 +1,15 @@
 ---
-name: codewright
+name: code-wright
 description: >-
   Implement, refactor, and review scoped code changes under the repository's
-  contribution rules and optional Codewright profile. Use when code, tests, or
+  contribution rules and optional Code Wright profile. Use when code, tests, or
   module placement must change, or an existing change needs placement and
-  readability review, or the user asks to configure Codewright for a repository.
+  readability review, or the user asks to configure Code Wright for a repository.
   Not for architecture-only planning or
   whole-codebase quality audits.
 ---
 
-# Codewright
+# Code Wright
 
 Turn approved behavior into the smallest repository-native change, or review that change within the requested scope.
 
@@ -29,7 +29,7 @@ Treat repository authorities and `.codewright.toml` as read-only inputs unless t
 
 For implementation, check the active repository root for `.codewright.toml` before exploring code. If it is absent, read [references/repository-language-profile.md](references/repository-language-profile.md) and offer its first-use setup once in the current conversation. Collect unresolved language choices and explain `ask` versus `auto` together. Continue grounding while the answer is pending; do not persist unanswered choices. If the user skips setup or gives no answer, continue the requested work with repository authorities and defaults. Review-only work stays read-only and does not prompt for setup.
 
-When the user explicitly asks to configure Codewright, run the same setup whether or not a profile exists. Finish with the resolved settings, files changed, and any settings left at defaults. Do not search other projects for preferences or edit installed skill files to configure a consuming repository.
+When the user explicitly asks to configure Code Wright, run the same setup whether or not a profile exists. Finish with the resolved settings, files changed, and any settings left at defaults. Do not search other projects for preferences or edit installed skill files to configure a consuming repository.
 
 ## Context Pointers
 

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Codewright"
-  short_description: "Implement or review scoped code with repository rules"
-  default_prompt: "Use $codewright to implement or review this change under the repository contribution rules."
-policy:
-  allow_implicit_invocation: false

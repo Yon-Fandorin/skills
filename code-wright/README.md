@@ -1,10 +1,10 @@
-# Codewright
+# Code Wright
 
 저장소 규칙에 맞춰 코드를 작성·리팩터링하거나 변경을 검토한다.
 
 ```text
-$codewright로 이 변경을 구현해줘.
-$codewright로 현재 변경의 코드 배치와 가독성을 검토해줘.
+$code-wright로 이 변경을 구현해줘.
+$code-wright로 현재 변경의 코드 배치와 가독성을 검토해줘.
 ```
 
 검토만 요청하면 파일을 수정하지 않는다. 실행 규칙과 언어·프레임워크별 참조는 [SKILL.md](SKILL.md), 언어·배치 승인 설정은 [저장소 프로필](references/repository-language-profile.md)을 따른다.
@@ -16,7 +16,7 @@ $codewright로 현재 변경의 코드 배치와 가독성을 검토해줘.
 구현 작업에서 저장소 루트에 `.codewright.toml`이 없으면 언어와 코드 배치 승인 방식을 함께 설정하도록 안내한다. 설정을 건너뛰어도 기존 저장소 규칙과 기본값으로 작업을 계속한다. 검토만 요청한 경우에는 설정을 묻거나 파일을 만들지 않는다.
 
 ```text
-$codewright 설정해줘. 주석·API 문서·테스트 설명은 한국어, 배치 승인은 auto로 저장해줘.
+$code-wright 설정해줘. 주석·API 문서·테스트 설명은 한국어, 배치 승인은 auto로 저장해줘.
 README와 일반 문서는 한국어, 에이전트용 지침은 영어로 AGENTS.md에 기록해줘.
 ```
 

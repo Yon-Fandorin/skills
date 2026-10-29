@@ -28,29 +28,29 @@
 | `codebase-architecture/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
 | `codebase-architecture/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
 | `codebase-architecture/references/boundary-cases.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
-| `codewright/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
-| `codewright/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
-| `codewright/fixtures/rust-test-layout/Cargo.toml` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/negative/lib.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/negative/sibling_tests.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/src/lib.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/src/private_logic.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/src/private_logic/tests/calculation.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/src/private_logic/tests/mod.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/src/private_logic/tests/validation.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/fixtures/rust-test-layout/tests/public_contract.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
-| `codewright/references/axum-api-boundaries.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/cli-project-structure.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/code-placement-review.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/default-contribution-rules.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/lessons.md` | 재사용할 판단 기준·근거 범위; 특정 사례·실행 이력 제외 |
-| `codewright/references/python-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/repository-language-profile.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/rust-contribution-rules.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/svelte-component-boundaries.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/references/typescript-react-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
-| `codewright/scripts/validate_rust_test_layout.sh` | 실행 조건·결정적 검사·임시 파일·실패 판정 |
+| `code-wright/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
+| `code-wright/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
+| `code-wright/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
+| `code-wright/fixtures/rust-test-layout/Cargo.toml` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/negative/lib.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/negative/sibling_tests.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/src/lib.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/src/private_logic.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/src/private_logic/tests/calculation.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/src/private_logic/tests/mod.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/src/private_logic/tests/validation.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/fixtures/rust-test-layout/tests/public_contract.rs` | 실제 테스트 발견·공개/비공개 접근 계약 |
+| `code-wright/references/axum-api-boundaries.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/cli-project-structure.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/code-placement-review.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/default-contribution-rules.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/lessons.md` | 재사용할 판단 기준·근거 범위; 특정 사례·실행 이력 제외 |
+| `code-wright/references/python-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/repository-language-profile.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/rust-contribution-rules.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/svelte-component-boundaries.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/references/typescript-react-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `code-wright/scripts/validate_rust_test_layout.sh` | 실행 조건·결정적 검사·임시 파일·실패 판정 |
 | `docs/document-review.md` | 현재 목록의 누락·중복·절차와 저장소 지침의 일치 |
 | `external/humanizer` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/marketplace.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |

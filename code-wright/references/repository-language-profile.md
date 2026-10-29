@@ -1,6 +1,8 @@
 # Repository Profile
 
-Use `.codewright.toml` at the repository root to share natural-language choices and Codewright's shape-approval mode across contributors and agent harnesses. The profile belongs in version control; it is not a personal preference file.
+Use `.codewright.toml` at the repository root to share natural-language choices and Code Wright's shape-approval mode across contributors and agent harnesses. The profile belongs in version control; it is not a personal preference file.
+
+The `$code-wright` skill keeps the `.codewright.toml` filename for compatibility with existing repository profiles.
 
 ## Discovery
 
@@ -20,7 +22,7 @@ Offer one compact setup question covering the unresolved choices:
 
 For example, when no policy exists:
 
-> Codewright의 저장소 설정을 정할까요? 코드 주석·API 문서·테스트 설명은 각각 어떤 언어로 쓸까요(기본값: 영어, 세 항목을 한 언어로 지정 가능)? 새 코드 배치를 설명한 뒤 승인을 기다리는 `ask`와, 작업 범위와 소유자가 정해졌으면 계속하는 `auto` 중 선택해주세요(기본값: `ask`). README·일반 문서와 에이전트용 지침의 언어도 AGENTS.md에 기록하려면 함께 알려주세요. 설정을 건너뛰고 현재 작업을 계속해도 됩니다.
+> Code Wright의 저장소 설정을 정할까요? 코드 주석·API 문서·테스트 설명은 각각 어떤 언어로 쓸까요(기본값: 영어, 세 항목을 한 언어로 지정 가능)? 새 코드 배치를 설명한 뒤 승인을 기다리는 `ask`와, 작업 범위와 소유자가 정해졌으면 계속하는 `auto` 중 선택해주세요(기본값: `ask`). README·일반 문서와 에이전트용 지침의 언어도 AGENTS.md에 기록하려면 함께 알려주세요. 설정을 건너뛰고 현재 작업을 계속해도 됩니다.
 
 If the current request already specifies these choices and authorizes saving them, use it without another question. Accepting setup authorizes creating the root `.codewright.toml` with the resolved choices; changing an existing profile requires a request to save the new choices. Update existing keys in place and preserve unrelated settings. Resolve an unsupported or malformed existing profile under the fallback rules below before replacing it. Omit unanswered language keys and use their defaults; missing shape defaults to `ask`, never `auto`. Do not save a provisional default while awaiting an answer. A choice for this task alone does not authorize persistence.
 

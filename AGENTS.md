@@ -1,6 +1,6 @@
 # Repository instructions
 
-This repository owns `codebase-architecture`, `codewright`, `pr-writer`, and
+This repository owns `codebase-architecture`, `code-wright`, `pr-writer`, and
 `skill-reviewer`. Shared prose editing is defined in
 `references/prose-editing.md`; Humanizer's upstream source
 is the pinned `external/humanizer` submodule. Follow the authoring-language

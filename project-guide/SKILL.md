@@ -4,7 +4,7 @@ description: >-
   Assess a project's purpose and working practices, then establish or refine its
   agent instructions, contribution guidance, and management conventions. Use for
   project guidance and setup. Delegates AGENTS.md authoring to agents-writer;
-  routine code changes belong to Codewright.
+  routine code changes belong to Code Wright.
 ---
 
 # Project guide

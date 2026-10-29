@@ -1,5 +1,5 @@
 __pycache__/
 *.pyc
 .DS_Store
-/codewright/fixtures/rust-test-layout/target/
-/codewright/fixtures/rust-test-layout/Cargo.lock
+/code-wright/fixtures/rust-test-layout/target/
+/code-wright/fixtures/rust-test-layout/Cargo.lock

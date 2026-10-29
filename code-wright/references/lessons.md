@@ -1,4 +1,4 @@
-# Codewright Lessons
+# Code Wright Lessons
 
 Keep reusable decision criteria here. Store project cases, patches, comparison
 outputs, and execution history in private review records.
