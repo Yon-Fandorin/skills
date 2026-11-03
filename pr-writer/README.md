@@ -19,4 +19,4 @@ $pr-writer로 이 PR 본문을 근거와 대조하고 다듬어줘.
 새 PR은 항상 드래프트로 생성하며, Ready 전환은 사용자의 명시적 요청이
 있을 때만 진행한다.
 
-실행 규칙과 유형별 질문은 [SKILL.md](SKILL.md), 설치는 [저장소 안내](../README.md#설치)를 참고한다.
+실행 규칙과 유형별 질문은 [SKILL.md](SKILL.md), 설치는 [저장소 안내](https://github.com/Yon-Fandorin/skills#설치)를 참고한다.

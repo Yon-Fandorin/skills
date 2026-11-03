@@ -10,13 +10,13 @@
 | [Code Wright](code-wright/README.md) | 코드 작성·리팩터링·검토 | `$code-wright` |
 | [PR Writer](pr-writer/README.md) | PR 제목·본문 작성과 편집 | `$pr-writer` |
 | [Finish Task](finish-task/SKILL.md) | 완료한 작업의 부산물 정리와 최종 기록 정비 | `$finish-task` |
-| [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조 검토 | `$skill-reviewer` |
+| [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조·검증 근거 검토 | `$skill-reviewer` |
 
 Project Guide는 프로젝트 지침·관리 체계를 정리할 때 자동 선택될 수 있다. 목적·산출물·작업 흐름을 확인하고 근거가 있는 유형의 지침만 적용한다. 유형이 불확실하면 추측한 기여 규칙은 넣지 않고, 필요한 결정만 질문한다. 유형별 작성법은 별도 참조로 확장한다. 결과물은 프레시 컨텍스트 에이전트의 검수를 받고, 실질적인 개선사항을 반영한 최종본에 미해결 지적이 없어야 완료한다. AGENTS.md 작성·검토는 Agents Writer로 연결한다. Git을 쓰는 프로젝트에서는 PR을 드래프트로 생성하며, CI/CD 추가·활성화·확대는 사용자가 명시적으로 승인한 범위에서만 진행한다.
 
 Agents Writer는 AGENTS.md 작성·정리·검토에 맞으면 자동 선택될 수 있다. 기본 지침은 짧게 유지하고, 판단 보조가 필요할 때만 작성 예시·점검 절차를 읽는다. 공식 출처와 도구별 로딩 차이는 별도 참조로 구분한다.
 
-소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture와 PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Code Wright와 Skill Reviewer는 명시적으로 호출한다. Finish Task는 작업 마무리·부산물 정리 요청에 자동 선택될 수 있으며, 작업 소유권과 기존 승인 범위를 확인하고 최종 기록·참조를 함께 정비한다.
+소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture, Code Wright, PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Skill Reviewer는 명시적으로 호출한다. Finish Task는 작업 마무리·부산물 정리 요청에 자동 선택될 수 있으며, 작업 소유권과 기존 승인 범위를 확인하고 최종 기록·참조를 함께 정비한다.
 
 ## 설치
 
@@ -70,4 +70,4 @@ git -C ~/.yon-skills submodule update --init --recursive
 
 에이전트용 지침은 영어, README는 한국어로 작성한다. 한국어 예시와 인용문은 에이전트용 문서에도 넣을 수 있다. 결과물의 언어는 사용자 요청과 대상 저장소의 정책을 따른다.
 
-문서 작업은 [저장소 지침](AGENTS.md)과 [문서 목록·검토 절차](docs/document-review.md)를 따른다. `lessons.md`에는 재사용할 판단 기준을 남기고, 구체적인 평가·작업 이력은 버전 관리에서 제외한 로컬 기록에 보관한다. 스킬별 실행 규칙과 상세 참조는 각 `SKILL.md`에서 관리한다.
+문서 작업은 [저장소 지침](AGENTS.md)과 [문서 목록·검토 절차](docs/document-review.md)를 따른다. `lessons.md`에는 재사용할 판단 기준만 남기고, 구체적인 평가 결과·작업 이력은 저장소에 넣지 않는다. 스킬별 실행 규칙과 상세 참조는 각 `SKILL.md`에서 관리한다.

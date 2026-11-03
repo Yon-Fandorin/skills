@@ -1,12 +1,13 @@
 ---
 name: code-wright
 description: >-
-  Implement, refactor, and review scoped code changes under the repository's
-  contribution rules and optional Code Wright profile. Use when code, tests, or
-  module placement must change, or an existing change needs placement and
-  readability review, or the user asks to configure Code Wright for a repository.
-  Not for architecture-only planning or
-  whole-codebase quality audits.
+  Implement, fix, refactor, and review scoped code changes under the repository's
+  contribution rules and optional Code Wright profile. Use when a request changes
+  code or tests, such as fixing a bug, adding or changing behavior, refactoring,
+  or moving modules or tests; when an existing change needs placement and
+  readability review; or when the user asks to configure Code Wright for a
+  repository. Not for explaining code without changes, architecture-only
+  planning, or whole-codebase quality audits.
 ---
 
 # Code Wright
@@ -27,7 +28,7 @@ Treat repository authorities and `.codewright.toml` as read-only inputs unless t
 
 ## First Use And Setup
 
-For implementation, check the active repository root for `.codewright.toml` before exploring code. If it is absent, read [references/repository-language-profile.md](references/repository-language-profile.md) and offer its first-use setup once in the current conversation. Collect unresolved language choices and explain `ask` versus `auto` together. Continue grounding while the answer is pending; do not persist unanswered choices. If the user skips setup or gives no answer, continue the requested work with repository authorities and defaults. Review-only work stays read-only and does not prompt for setup.
+For implementation, check the active repository root for `.codewright.toml` before exploring code. If it is absent, read [references/repository-language-profile.md](references/repository-language-profile.md) and offer its first-use setup once in the current conversation. Collect unresolved language choices and explain `ask` versus `auto` together. Continue grounding while the answer is pending; do not persist unanswered choices. If the user skips setup or gives no answer, continue the requested work with repository authorities and defaults. If the offer has not reached the user before the handoff, include it once in the handoff. Review-only work stays read-only and does not prompt for setup.
 
 When the user explicitly asks to configure Code Wright, run the same setup whether or not a profile exists. Finish with the resolved settings, files changed, and any settings left at defaults. Do not search other projects for preferences or edit installed skill files to configure a consuming repository.
 
@@ -77,5 +78,5 @@ For setup-only work, the requested settings are saved and validated, unrelated c
 - the requested code, test, or placement change is complete and affected tests are updated;
 - every changed responsibility has a clear owner, and every changed file follows the applicable rules;
 - every required check passed, or each missing check has an explicit reason;
-- the handoff names the outcome, verification, and unresolved decisions;
+- the handoff names the outcome, verification, and unresolved decisions, including any first-use setup offer that has not yet reached the user;
 - commit readiness is claimed only when no owner decision remains unresolved and no known rule violation remains.

@@ -27,8 +27,8 @@ src/
 tests/
 ├── cli.rs
 └── common/
-│   ├── mod.rs
-│   └── directory.rs
+    ├── mod.rs
+    └── directory.rs
 ```
 
 For Rust module and source unit-test filenames, follow the Rust contribution

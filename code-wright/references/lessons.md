@@ -1,7 +1,8 @@
 # Code Wright Lessons
 
-Keep reusable decision criteria here. Store project cases, patches, comparison
-outputs, and execution history in private review records.
+Maintainer notes for revising this skill; task runs do not load this file.
+Keep reusable decision criteria here; leave project cases, patches, comparison
+outputs, and execution history out of this file.
 
 ## Behavior-preserving changes
 

@@ -2,19 +2,23 @@
 
 Apply when the target project actually uses Git. Respect its hosting service
 and existing contribution conventions; Git does not imply GitHub or hosted CI.
+Those conventions govern branches, templates, labels, and review flow. The
+draft and CI/CD rules below still apply unless the user directs otherwise.
 
 ## Pull requests
 
 Create PRs only when the task authorizes creation, and always create them as
-drafts. For GitHub CLI, use `gh pr create --draft`; see the
-[creation command](https://cli.github.com/manual/gh_pr_create). Verify the
+drafts. Keep the PR in draft until the user explicitly requests promotion.
+Passing checks or a clean review does not authorize marking it ready or merging
+it.
+
+Use `pr-writer` when available; its publishing reference owns title, body,
+creation, and readback steps and preserves the existing template and evidence
+requirements. Without it, create the PR with the host's draft option (for
+GitHub CLI, `gh pr create --draft`; see the
+[creation command](https://cli.github.com/manual/gh_pr_create)) and verify the
 created PR's draft state with its base, head, and change scope. If the host
 cannot create a draft, report the limitation rather than create a ready PR.
-
-Keep the PR in draft until the user explicitly requests promotion. Passing
-checks or a clean review does not authorize marking it ready or merging it.
-For title and body work, use `pr-writer` when available and preserve the existing
-template and evidence requirements.
 
 ## CI/CD opt-in
 

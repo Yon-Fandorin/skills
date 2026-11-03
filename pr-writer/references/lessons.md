@@ -1,7 +1,8 @@
 # PR Writer Lessons
 
-Keep reusable writing and verification principles here. Store specific PRs,
-evaluation runs, test counts, and authoring history in private review records.
+Maintainer notes for revising this skill; task runs do not load this file.
+Keep reusable writing and verification principles here; leave specific PRs,
+evaluation runs, test counts, and authoring history out of this file.
 
 ## Choose the representation while drafting
 

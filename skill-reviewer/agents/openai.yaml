@@ -1,6 +1,6 @@
 interface:
   display_name: "Skill Reviewer"
-  short_description: "Review Agent Skills with a fresh context and AI Hero"
-  default_prompt: "Use $skill-reviewer to review this Agent Skill in a fresh-context agent against AI Hero guidance and report evidence-backed findings and coverage."
+  short_description: "Review skill structure and validation evidence independently"
+  default_prompt: "Use $skill-reviewer to review this Agent Skill in a fresh-context agent against AI Hero and Anthropic-informed criteria, reporting findings, validation evidence, and the limits of the readiness verdict."
 policy:
   allow_implicit_invocation: false

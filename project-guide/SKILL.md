@@ -4,7 +4,8 @@ description: >-
   Assess a project's purpose and working practices, then establish or refine its
   agent instructions, contribution guidance, and management conventions. Use for
   project guidance and setup. Delegates AGENTS.md authoring to agents-writer;
-  routine code changes belong to Code Wright.
+  use agents-writer directly for AGENTS.md-only work. Routine code changes
+  belong to Code Wright.
 ---
 
 # Project guide
@@ -29,7 +30,9 @@ where they govern, regardless of the inferred type.
 
 If the project uses Git, read [Git workflow](references/git-workflow.md) for
 draft PRs and explicit CI/CD opt-in. Carry these rules into requested project
-instructions. Git usage alone does not select the software project type.
+instructions as approved policy. If one conflicts with an established project
+rule, keep that rule, report the conflict, and ask. Git usage alone does not
+select the software project type.
 
 When the type is uncertain or has no guide, keep supported common rules and
 omit unsupported type-specific additions. State the uncertainty. Ask a focused
@@ -60,7 +63,8 @@ For produced or revised deliverables, follow
 [fresh-context review](references/completion-review.md) before claiming
 completion. The final snapshot must have no unresolved actionable findings;
 an unavailable or unfinished required review leaves the work incomplete.
-Carry this completion criterion into requested project working instructions.
+Carry this completion criterion into requested project working instructions
+on the same terms as the Git rules.
 
 Report the supported project assessment, resulting conventions or changed
 files, verification, final review result, and unresolved decisions. Separate

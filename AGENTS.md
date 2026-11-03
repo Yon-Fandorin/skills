@@ -1,7 +1,8 @@
 # Repository instructions
 
-This repository owns `codebase-architecture`, `code-wright`, `pr-writer`, and
-`skill-reviewer`. Shared prose editing is defined in
+This repository owns `agents-writer`, `codebase-architecture`, `code-wright`,
+`finish-task`, `pr-writer`, `project-guide`, and `skill-reviewer`. Shared prose
+editing is defined in
 `references/prose-editing.md`; Humanizer's upstream source
 is the pinned `external/humanizer` submodule. Follow the authoring-language
 convention in the root README, including examples in the artifact's language.
@@ -15,9 +16,7 @@ metadata, instead of relying on a remembered file count or a Hangul-only search.
 
 Read each new, changed, or moved file's final content, resolve material findings,
 and complete applicable link, metadata, or workflow checks. Recheck affected
-content after further edits. Record the inspected snapshot, reviewer, actual
-results, and unexecuted checks in private records outside version control.
-Keep reusable criteria in lessons files; keep project examples, dated evaluation
+content after further edits. Keep reusable criteria in lessons files; keep project examples, dated evaluation
 results, commit-specific narratives, and task history out of public guidance.
 
 When independent agents are requested, give each an explicit file set and keep
