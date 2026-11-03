@@ -6,13 +6,9 @@ the task, output language, evidence, required format, and completion criteria.
 
 ## Resolve the shared editor
 
-Resolve the absolute real path of the calling skill's `SKILL.md`, following
-symlinks on the file and its parent directories. In this repository's layout,
-the parent of the resulting skill directory is the skills repository root;
-look for `external/humanizer/SKILL.md` there. Do not search the consuming
-project's Git root or depend on a fixed home path.
-
-When that file exists, read it and use Humanizer's embedded mode. The parent
+Read [Humanizer](../external/humanizer/SKILL.md) relative to this file's real
+directory, the skills repository's `references/`, and use its embedded mode.
+Do not search the consuming project's Git root or depend on a fixed home path. The parent
 repository's gitlink selects the editor revision. Keep upstream files unchanged;
 updates are a separate maintenance task. When the shared guide or submodule is
 unavailable in a standalone installation, perform the calling skill's native

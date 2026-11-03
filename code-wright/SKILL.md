@@ -1,13 +1,13 @@
 ---
 name: code-wright
 description: >-
-  Implement, fix, refactor, and review scoped code changes under the repository's
-  contribution rules and optional Code Wright profile. Use when a request changes
-  code or tests, such as fixing a bug, adding or changing behavior, refactoring,
-  or moving modules or tests; when an existing change needs placement and
-  readability review; or when the user asks to configure Code Wright for a
-  repository. Not for explaining code without changes, architecture-only
-  planning, or whole-codebase quality audits.
+  Use automatically for requested code or test edits, including one-line bug
+  fixes, feature changes, refactoring, and moving modules or tests. Follow
+  repository contribution rules and the optional Code Wright profile. Also
+  use for reviews specifically focused on code placement or readability of
+  an existing change, or when asked to configure Code Wright for a repository.
+  Not for explanation-only requests, general code or PR reviews,
+  architecture-only planning, or whole-codebase quality audits.
 ---
 
 # Code Wright
@@ -43,7 +43,7 @@ When the user explicitly asks to configure Code Wright, run the same setup wheth
 - **Rust:** Read [references/rust-contribution-rules.md](references/rust-contribution-rules.md) when the changed target is Rust.
 - **Axum:** Read [references/axum-api-boundaries.md](references/axum-api-boundaries.md) when changing Axum handlers, extractors, middleware, request DTOs, or API schemas.
 - **Svelte/SvelteKit:** Read [references/svelte-component-boundaries.md](references/svelte-component-boundaries.md) when changing Svelte components, reactivity, SvelteKit data loading, form actions, or rendering boundaries.
-- **Prose editing:** When the authorized change includes a prose-editing pass for comments, API documentation, test descriptions, or maintainer documentation, resolve this `SKILL.md` through installation symlinks and read [shared prose editing](../references/prose-editing.md) relative to its real directory if that reference exists. If it is absent in a standalone installation, use the governing language settings, baseline prose rules, and normal verification and review criteria.
+- **Prose editing:** When the authorized change includes a prose-editing pass for comments, API documentation, test descriptions, or maintainer documentation, resolve this `SKILL.md` through installation symlinks and read [shared prose editing](../references/prose-editing.md) relative to its real directory if that reference exists. Use the shell to resolve it (for example `realpath` on this file); a file reader that normalizes `..` before following the skill-directory symlink can miss the reference. If it is absent in a standalone installation, use the governing language settings, baseline prose rules, and normal verification and review criteria.
 
 Read the baseline and only the references whose conditions match. Language and framework references can both apply. When no pointer matches, use the repository and baseline without substituting a nearby reference.
 
@@ -66,7 +66,7 @@ When the user requests inspection without edits, run **Ground** and **Review** a
 ### Implementation
 
 1. **Ground.** Read the governing sources, current tree, entry point, nearest owners, tests, and diff. For each requested behavior, name the smallest repository-authorized owner. When it touches a root, router, or shared orchestrator, state that owner's existing responsibility and apply the responsibility-boundary check above before editing. If the check finds an authority conflict or a concern that the approved scope and existing shape do not resolve, request an owner decision before editing. Finish with the requested behavior, intended owners, and verification surface stated explicitly; label assumptions.
-2. **Confirm shape.** When the change introduces or moves a directory, module, or test hierarchy, show the proposed tree, one responsibility per part, and the intended dependency direction and shared surface between parts. An existing approved hierarchy satisfies this step when the change extends it consistently without widening that surface. Otherwise, `approval.shape = "ask"` (the default) waits for approval; `"auto"` continues after that brief explanation only when the shape stays within the requested task and ownership is settled. Auto approval does not settle new product, security, trust, or ownership decisions, override a user or repository requirement to wait, or grant tool permissions or external-action authority. Resolve those decisions before editing, regardless of this setting.
+2. **Confirm shape.** When the change introduces or moves a directory, module, or test hierarchy, show the proposed tree, one responsibility per part, and the intended dependency direction and shared surface between parts. An existing approved hierarchy satisfies this step when the change extends it consistently without widening that surface. Otherwise, `approval.shape = "ask"` (the default) waits for approval: end the turn after presenting the shape and edit nothing until the user approves it. A request to restructure or an unanswered setup offer does not approve a proposed shape. `"auto"` continues after that brief explanation only when the shape stays within the requested task and ownership is settled. Auto approval does not settle new product, security, trust, or ownership decisions, override a user or repository requirement to wait, or grant tool permissions or external-action authority. Resolve those decisions before editing, regardless of this setting.
 3. **Implement.** Change one cohesive scope. For a behavior-preserving refactor, name the concrete maintenance cost and preserved contract before editing; keep discovered behavior changes in a separately authorized scope. Update its owned tests and documentation when the change affects them. If implementation reveals a boundary concern or conflicts with governing ownership and the approved scope and shape do not resolve it, stop and request an owner decision. Finish when every changed line belongs to that scope.
 4. **Verify.** Run the repository formatter, compiler or linter, and nearest meaningful tests. Finish with each required check passing or its missing result explained. A moved test is verified only by a command that discovers or compiles its new location.
 5. **Review.** Read the final diff and tree against every governing source and repeat the boundary check. Assess file ownership and in-file declaration order separately; use the code-placement reference when its trigger applies. If a structural change affects two or more children of one parent, review their combined final topology; justify sibling-versus-child placement with the evidence above, including authorized entrypoint or public surfaces, and descend support code with one clear owner when the dependency direction permits. Separate scope reviews do not replace this parent-scoped pass, and shorter listings alone do not justify grouping. Resolve known stale paths, ownership, visibility, comments, test placement, or unrelated churn within the authorized scope, or report the finding. Compare claims in the changed scope with actual behavior, boundary conditions, and governing contracts. A review covers only the state it inspected; after review-driven edits, run affected checks and re-review the updated final diff in any user-requested review mode before completion.

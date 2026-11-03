@@ -51,7 +51,9 @@ necessary conclusion, provenance, and verification limits in the final record.
   branch. For a squash merge, compare the merged PR and commit with the final
   contents of all task changes; ancestry alone is insufficient. Keep additional
   commits or unrelated changes that have not been preserved.
-- Remove the task checkout before its local branch. Preserve other checkouts,
+- Remove the task checkout before its local branch. Remove a Git worktree with
+  `git worktree remove` so its registration goes with it; if Git metadata cannot
+  be changed, leave the checkout in place and report it. Preserve other checkouts,
   branches, and uncommitted work. Do not force-reset or overwrite work to make
   deletion possible. Remote branch deletion is a separate scope decision.
 - For Docker images, check exact references and users among running and stopped

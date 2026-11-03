@@ -26,6 +26,7 @@ recursively dispatching another review of its own report.
    with a self-review or claim completion with unresolved findings.
 
 The completion record identifies the final snapshot, reviewer independence,
-scope, actual checks, and final findings. Follow project rules for where review
+scope, actual checks, and final findings. Name the fresh reviewer's agent or
+session; a review without one is a self-review and leaves the gate open. Follow project rules for where review
 records belong. Report the limits of the evidence; a clean scoped review is
 not a guarantee against every future defect.

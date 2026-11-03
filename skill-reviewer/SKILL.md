@@ -18,7 +18,7 @@ Review one skill package against its intended contract and evidence. Keep a smal
 
 - **Criteria:** Read [review criteria](references/review-criteria.md) for every review.
 - **Calibration:** Read [exemplar selection](references/exemplars.md), then the AI Hero writing source and the matching skill source it selects. A summary or unopened link does not complete calibration.
-- **Report editing:** When the report needs a prose pass, resolve this file through installation symlinks and read [shared prose editing](../references/prose-editing.md) relative to its real directory if present. In a standalone installation, use the finding filter and output rules below.
+- **Report editing:** When the report needs a prose pass, resolve this file through installation symlinks and read [shared prose editing](../references/prose-editing.md) relative to its real directory if present. Use the shell to resolve it (for example `realpath` on this file); a file reader that normalizes `..` before following the skill-directory symlink can miss the reference. In a standalone installation, use the finding filter and output rules below.
 
 ## Dispatch
 

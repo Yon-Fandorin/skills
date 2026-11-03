@@ -38,7 +38,15 @@ unresolved instead of guessing.
 
 ## 2. Draft for the reviewer
 
-Read only the closest type's reviewer questions:
+Before drafting, use the shell to resolve this `SKILL.md` through installation
+symlinks (for example `realpath`); a file reader that normalizes `..` before
+following the skill-directory symlink can miss the shared files. Relative to
+its real directory, read [shared prose editing](../references/prose-editing.md)
+and, when available, the Humanizer file it resolves. If the shared editor is
+unavailable in a standalone installation, apply step 3's native pass after
+drafting without fetching a dependency.
+
+Then read only the closest type's reviewer questions:
 [bugfix](templates/bugfix.md), [feature](templates/feature.md),
 [refactor](templates/refactor.md), [performance](templates/performance.md),
 [infra](templates/infra.md), or [hotfix](templates/hotfix.md).
@@ -49,7 +57,7 @@ With no repository template, use only the headings this change needs.
 Resolve the title and body language from the current user instruction, then
 repository requirements, then the existing PR or supplied writing sample. When
 none selects a language, use the user's language. The English instructions and
-type-template headings are guidance; adapt optional headings to the resolved
+type-question labels are guidance; adapt optional headings to the resolved
 language while retaining headings and metadata required by the repository.
 
 Lead with the concrete problem and resulting behavior. Give each fact one home:
@@ -95,17 +103,16 @@ Write a concise outcome-oriented title using the repository's convention.
 
 **Complete when:** the problem, behavior, cause, evidence, and merge implications
 are easy to find; required template items and material type questions each have
-one home; comparisons and critical order are visible in the chosen structure.
+one home; comparisons and critical order are visible in the chosen structure;
+optional headings use the resolved language.
 
 ## 3. Edit and reconcile
 
-Select reviewer-relevant facts before the prose pass. Resolve this `SKILL.md` through
-installation symlinks and read [shared prose editing](../references/prose-editing.md)
-relative to its real directory when that reference exists. It owns shared
-Humanizer resolution and language-aware editing. Apply the resolved Humanizer
-instructions to the selected title and body in embedded mode, returning only
-the final artifact. If the shared editor is unavailable in a standalone
-installation, perform the native pass below without fetching a dependency.
+Select reviewer-relevant facts before the prose pass. Apply the Humanizer
+instructions loaded before drafting to the selected title and body in embedded
+mode, returning only the final artifact; the shared prose-editing reference owns
+Humanizer resolution and language-aware editing. If the shared editor was
+unavailable, perform the native pass below.
 
 Read the title and body as a reviewer encountering the change for the first
 time. Make the problem, resulting behavior, and review implications easy to
@@ -141,8 +148,9 @@ before delivery. Keep this audit internal unless requested.
 **Complete when:** the opening states the problem and outcome, each section
 answers a distinct reviewer question, conditions are easy to compare, and every
 retained consequential statement matches the final comparison. The reader can
-understand the change without reconstructing the work or review log. Return
-the edited artifact; show
+understand the change without reconstructing the work or review log. The
+shared prose pass ran on the final text, or the native pass ran because the
+shared editor was unavailable. Return the edited artifact; show
 intermediate versions or an editing audit only when requested.
 
 ## 4. Return or publish
@@ -153,4 +161,5 @@ When PR creation or modification is authorized, read
 
 **Complete when:** the requested artifact is delivered; for publishing, the
 hosting service's title, body, base, head, labels, and draft state have been read
-back and match the intended result. Stop at the requested outcome.
+back and match the intended result, including the repository's matching type
+label when one exists. Stop at the requested outcome.

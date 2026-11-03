@@ -14,7 +14,7 @@ or rules do not justify creating a generic development policy.
 ## Requested software work
 
 Guidance authoring alone does not start implementation. For requested code
-changes or scoped code review, load `code-wright` and follow its applicable
+changes or placement and readability review of a change, load `code-wright` and follow its applicable
 references and approval settings. For responsibility, placement, public API,
 or dependency decisions, first load `codebase-architecture`.
 
