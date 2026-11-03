@@ -1,6 +1,6 @@
 # Skills
 
-코드베이스 구조 설계, 코드 작성, PR 편집과 스킬 검토를 위한 스킬 모음이다.
+코드베이스 구조 설계, 코드 작성, PR 편집, 작업 마무리와 스킬 검토를 위한 스킬 모음이다.
 
 | 스킬 | 역할 | 호출 |
 |------|------|------|
@@ -9,13 +9,14 @@
 | [Agents Writer](agents-writer/SKILL.md) | 근거에 맞는 간결한 AGENTS.md 작성·정리·검토 | `$agents-writer` |
 | [Code Wright](code-wright/README.md) | 코드 작성·리팩터링·검토 | `$code-wright` |
 | [PR Writer](pr-writer/README.md) | PR 제목·본문 작성과 편집 | `$pr-writer` |
+| [Finish Task](finish-task/SKILL.md) | 완료한 작업의 부산물 정리와 최종 기록 정비 | `$finish-task` |
 | [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조 검토 | `$skill-reviewer` |
 
 Project Guide는 프로젝트 지침·관리 체계를 정리할 때 자동 선택될 수 있다. 목적·산출물·작업 흐름을 확인하고 근거가 있는 유형의 지침만 적용한다. 유형이 불확실하면 추측한 기여 규칙은 넣지 않고, 필요한 결정만 질문한다. 유형별 작성법은 별도 참조로 확장한다. 결과물은 프레시 컨텍스트 에이전트의 검수를 받고, 실질적인 개선사항을 반영한 최종본에 미해결 지적이 없어야 완료한다. AGENTS.md 작성·검토는 Agents Writer로 연결한다. Git을 쓰는 프로젝트에서는 PR을 드래프트로 생성하며, CI/CD 추가·활성화·확대는 사용자가 명시적으로 승인한 범위에서만 진행한다.
 
 Agents Writer는 AGENTS.md 작성·정리·검토에 맞으면 자동 선택될 수 있다. 기본 지침은 짧게 유지하고, 판단 보조가 필요할 때만 작성 예시·점검 절차를 읽는다. 공식 출처와 도구별 로딩 차이는 별도 참조로 구분한다.
 
-소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture와 PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Code Wright와 Skill Reviewer는 명시적으로 호출한다.
+소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture와 PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Code Wright와 Skill Reviewer는 명시적으로 호출한다. Finish Task는 작업 마무리·부산물 정리 요청에 자동 선택될 수 있으며, 작업 소유권과 기존 승인 범위를 확인하고 최종 기록·참조를 함께 정비한다.
 
 ## 설치
 
@@ -29,6 +30,7 @@ ln -s ~/.yon-skills/project-guide ~/.agents/skills/project-guide
 ln -s ~/.yon-skills/agents-writer ~/.agents/skills/agents-writer
 ln -s ~/.yon-skills/code-wright ~/.agents/skills/code-wright
 ln -s ~/.yon-skills/pr-writer ~/.agents/skills/pr-writer
+ln -s ~/.yon-skills/finish-task ~/.agents/skills/finish-task
 ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
 ```
 
@@ -40,7 +42,7 @@ ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
 공용 Humanizer 없이 각 스킬의 기본 편집 규칙을 사용하려면 [skills CLI](https://github.com/vercel-labs/skills)로 설치할 수 있다. 전체 저장소 설치와 개별 설치 중 하나를 선택한다.
 
 ```bash
-npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer code-wright pr-writer skill-reviewer
+npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer code-wright pr-writer finish-task skill-reviewer
 ```
 
 다른 에이전트에서는 `-a codex`를 해당 에이전트 이름으로 바꾸거나, 이 옵션을 빼고 설치 중 선택한다.

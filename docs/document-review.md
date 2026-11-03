@@ -67,6 +67,8 @@
 | `external/humanizer/SKILL.md` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/agents/openai.yaml` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/scripts/validate-package.py` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
+| `finish-task/SKILL.md` | 작업 소유권·승인 범위·부산물 정리·최종 기록과 참조·완료 검증 |
+| `finish-task/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
 | `project-guide/SKILL.md` | 호출 조건·스킬 인계·권한·완료 기준 |
 | `project-guide/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
 | `project-guide/references/completion-review.md` | 프레시 컨텍스트 검수·수정 후 재검수·완료 조건·증거 |

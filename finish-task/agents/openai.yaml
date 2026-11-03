@@ -1,0 +1,4 @@
+interface:
+  display_name: "작업 마무리"
+  short_description: "완료한 작업의 부산물을 정리하고 최종 기록과 참조를 정비합니다"
+  default_prompt: "$finish-task로 이번 작업의 부산물을 정리하고, 기록을 최종 상태에 맞게 정비한 뒤 남은 항목을 확인해줘."
