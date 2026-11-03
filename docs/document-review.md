@@ -52,6 +52,12 @@
 | `code-wright/references/typescript-react-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
 | `code-wright/scripts/validate_rust_test_layout.sh` | 실행 조건·결정적 검사·임시 파일·실패 판정 |
 | `docs/document-review.md` | 현재 목록의 누락·중복·절차와 저장소 지침의 일치 |
+| `evals/README.md` | 준비·실행·판정·보관 위치·호스트 설정과 격리 한계 |
+| `evals/cases.json` | 선택 경계·참조 로딩·상태 검사·수동 판단·Git 쓰기 등 환경 전제 |
+| `evals/fixtures.sh` | 새 fixture 생성·로컬 remote·squash와 worktree·사용자 파일 보존 대상 |
+| `evals/run.sh` | 설치 방식·사전 확인·effort와 권한·도구 설정·환경 제약 기록·중단과 결과 보존 |
+| `evals/score.py` | 호출과 결과 연결·읽기 범위와 후속 실패 구분·환경별 적용 여부·독립 판정 축·legacy 한계 |
+| `evals/bin/gh` | 네트워크 없는 상태 전이·로컬 Git 비교 필드·성공과 실패 기록·jq 필터와 지원 명령 계약 |
 | `external/humanizer` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/marketplace.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/plugin.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |

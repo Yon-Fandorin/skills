@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+"""Stateful GitHub CLI fixture. Every command is local and logged with its result."""
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+
+LABELS = [dict(name=name, description=description) for name, description in (
+    ("bug", "Incorrect behavior"), ("enhancement", "New behavior"),
+    ("refactor", "Code restructuring"), ("documentation", "Documentation"))]
+URL = "https://github.example.invalid/eval/calc"
+
+
+def option(args, *names, default=None):
+    for index, arg in enumerate(args):
+        for name in names:
+            if arg == name:
+                if index + 1 == len(args):
+                    raise ValueError("Missing value for " + name)
+                return args[index + 1]
+            if arg.startswith(name + "="):
+                return arg.split("=", 1)[1]
+    return default
+
+
+def labels(args, flag):
+    values = []
+    for index, arg in enumerate(args):
+        if arg == flag:
+            if index + 1 == len(args):
+                raise ValueError("Missing label")
+            values.extend(args[index + 1].split(","))
+        elif arg.startswith(flag + "="):
+            values.extend(arg.split("=", 1)[1].split(","))
+    if any(value not in {label["name"] for label in LABELS} for value in values):
+        raise ValueError("Label does not exist")
+    return values
+
+
+def body(args, previous=""):
+    filename = option(args, "--body-file", "-F")
+    if filename:
+        return sys.stdin.read() if filename == "-" else Path(filename).read_text()
+    return option(args, "--body", "-b", default=previous)
+
+
+def comparison(base, head):
+    def git(*args):
+        result = subprocess.run(["git", *args], text=True, capture_output=True)
+        if result.returncode:
+            raise ValueError("Git comparison failed: " + result.stderr.strip())
+        return result.stdout
+
+    base_oid = git("rev-parse", "--verify", "--end-of-options", base + "^{commit}").strip()
+    head_oid = git("rev-parse", "--verify", "--end-of-options", head + "^{commit}").strip()
+    paths = git("diff", "--name-only", "-z", base_oid + "..." + head_oid, "--").split("\0")
+    commits = git("rev-list", base_oid + ".." + head_oid, "--").splitlines()
+    return dict(files=[{"path": path} for path in paths if path],
+                commits=[{"oid": oid} for oid in commits], headRefOid=head_oid)
+
+
+def render(value, args):
+    fields = option(args, "--json")
+    if fields:
+        keys = fields.split(",")
+        def project(item):
+            if any(key not in item for key in keys):
+                raise ValueError("Unsupported JSON field")
+            return {key: item[key] for key in keys}
+        value = [project(item) for item in value] if isinstance(value, list) else project(value)
+    output = json.dumps(value, ensure_ascii=False)
+    expression = option(args, "--jq", "-q")
+    if expression is not None:
+        if not fields:
+            raise ValueError("--jq requires --json")
+        executable = shutil.which("jq")
+        if not executable:
+            raise ValueError("--jq requires the jq executable on PATH")
+        filtered = subprocess.run([executable, "-r", "--", expression], input=output,
+                                  text=True, capture_output=True, timeout=10)
+        if filtered.returncode:
+            raise ValueError("jq failed: " + filtered.stderr.strip())
+        output = filtered.stdout.rstrip("\n")
+    return output
+
+
+def dispatch(args, state):
+    command = args[:2]
+    flags = {arg.split("=", 1)[0] for arg in args[2:]}
+    if "--template" in flags or ("-t" in flags and command not in (["pr", "create"], ["pr", "edit"])):
+        raise ValueError("--template is unsupported")
+    if flags & {"--jq", "-q"} and command not in (["repo", "view"], ["label", "list"], ["pr", "list"], ["pr", "view"]):
+        raise ValueError("--jq is supported only for JSON read commands")
+    if args == ["--version"]:
+        return "gh eval-stub (local contract v1)", state
+    if command == ["auth", "status"]:
+        return "Eval stub: synthetic authentication; no network", state
+    if command == ["repo", "view"]:
+        return render(dict(nameWithOwner="eval/calc", defaultBranchRef={"name": "main"}, url=URL), args), state
+    if command == ["label", "list"]:
+        return render(LABELS, args), state
+    if command == ["pr", "list"]:
+        return render([state] if state and state["state"] == "OPEN" else [], args), state
+    if command == ["pr", "create"]:
+        if state:
+            raise ValueError("PR already exists in this fixture")
+        head = option(args, "--head", "-H")
+        if not head:
+            head = subprocess.check_output(["git", "branch", "--show-current"], text=True).strip()
+        chosen = labels(args, "--label") + labels(args, "-l")
+        state = dict(number=1, url=URL + "/pull/1", state="OPEN",
+                     title=option(args, "--title", "-t", default=""), body=body(args),
+                     baseRefName=option(args, "--base", "-B", default="main"),
+                     headRefName=head, isDraft="--draft" in args or "-d" in args,
+                     labels=[{"name": name} for name in dict.fromkeys(chosen)])
+        if not state["title"] or not state["body"]:
+            raise ValueError("Title and body are required")
+        state.update(comparison(state["baseRefName"], state["headRefName"]))
+        return state["url"], state
+    if command in (["pr", "view"], ["pr", "edit"], ["pr", "ready"], ["pr", "diff"]):
+        if not state:
+            raise ValueError("No pull request found")
+        if len(args) > 2 and not args[2].startswith("-") and args[2] not in (str(state["number"]), state["url"], state["headRefName"]):
+            raise ValueError("PR does not match this fixture")
+        if command == ["pr", "view"]:
+            return render(state, args), state
+        if command == ["pr", "diff"]:
+            if "diff" not in state:
+                raise ValueError("No stored PR diff")
+            return ("\n".join(item["path"] for item in state["files"])
+                    if "--name-only" in args else state["diff"]), state
+        if command == ["pr", "ready"]:
+            state["isDraft"] = False
+            return "Marked ready", state
+        state["title"] = option(args, "--title", "-t", default=state["title"])
+        state["body"] = body(args, state["body"])
+        base = option(args, "--base", "-B", default=state["baseRefName"])
+        if base != state["baseRefName"]:
+            state.update(comparison(base, state["headRefName"]))
+            state["baseRefName"] = base
+        chosen = [label["name"] for label in state["labels"]]
+        chosen += labels(args, "--add-label")
+        removed = labels(args, "--remove-label")
+        state["labels"] = [{"name": name} for name in dict.fromkeys(chosen) if name not in removed]
+        return state["url"], state
+    raise ValueError("Unsupported gh command: " + " ".join(args))
+
+
+def main():
+    log_path, state_path = os.environ.get("GH_STUB_LOG"), os.environ.get("GH_STUB_STATE")
+    if not log_path or not state_path:
+        sys.exit("eval-stub requires GH_STUB_LOG and GH_STUB_STATE")
+    args = sys.argv[1:]
+    before = json.loads(Path(state_path).read_text()) if Path(state_path).exists() else None
+    # Copy state so failed mutations cannot leak into the persisted state.
+    state, output, error, code = before, "", "", 0
+    try:
+        output, state = dispatch(args, json.loads(json.dumps(before)))
+        temporary = Path(state_path + ".tmp")
+        temporary.write_text(json.dumps(state, ensure_ascii=False))
+        temporary.replace(state_path)
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        error, code = "eval-stub: " + str(exc), 1
+        state = before
+    record = dict(argv=args, cwd=os.getcwd(), time=time.time(), exit_code=code,
+                  stdout=output, stderr=error, before=before, after=state)
+    with open(log_path, "a") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    if output:
+        print(output)
+    if error:
+        print(error, file=sys.stderr)
+    return code
+
+
+if __name__ == "__main__":
+    sys.exit(main())

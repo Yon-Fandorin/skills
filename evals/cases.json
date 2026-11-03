@@ -1,0 +1,409 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "read": {
+      "sandbox": "read-only",
+      "permission_mode": "default",
+      "allowed_tools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Skill",
+        "Bash(git *)",
+        "Bash(cat *)",
+        "Bash(sed *)",
+        "Bash(head *)",
+        "Bash(tail *)",
+        "Bash(ls *)",
+        "Bash(pwd)",
+        "Bash(realpath *)",
+        "Bash(readlink *)",
+        "Bash(which *)",
+        "Bash(command *)",
+        "Bash(python3 *)"
+      ]
+    },
+    "write": {
+      "sandbox": "workspace-write",
+      "permission_mode": "acceptEdits",
+      "allowed_tools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Skill",
+        "Bash(git *)",
+        "Bash(cat *)",
+        "Bash(sed *)",
+        "Bash(head *)",
+        "Bash(tail *)",
+        "Bash(ls *)",
+        "Bash(pwd)",
+        "Bash(realpath *)",
+        "Bash(readlink *)",
+        "Bash(which *)",
+        "Bash(command *)",
+        "Bash(python3 *)",
+        "Edit",
+        "Write",
+        "Bash(mkdir *)",
+        "Bash(gh *)"
+      ]
+    },
+    "project": {
+      "sandbox": "workspace-write",
+      "permission_mode": "acceptEdits",
+      "allowed_tools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Skill",
+        "Bash(git *)",
+        "Bash(cat *)",
+        "Bash(sed *)",
+        "Bash(head *)",
+        "Bash(tail *)",
+        "Bash(ls *)",
+        "Bash(pwd)",
+        "Bash(realpath *)",
+        "Bash(readlink *)",
+        "Bash(which *)",
+        "Bash(command *)",
+        "Bash(python3 *)",
+        "Edit",
+        "Write",
+        "Agent",
+        "Bash(mkdir *)"
+      ]
+    },
+    "cleanup": {
+      "sandbox": "workspace-write",
+      "permission_mode": "acceptEdits",
+      "allowed_tools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Skill",
+        "Bash(git *)",
+        "Bash(cat *)",
+        "Bash(sed *)",
+        "Bash(head *)",
+        "Bash(tail *)",
+        "Bash(ls *)",
+        "Bash(pwd)",
+        "Bash(realpath *)",
+        "Bash(readlink *)",
+        "Bash(which *)",
+        "Bash(command *)",
+        "Bash(python3 *)",
+        "Edit",
+        "Write",
+        "Bash(rm *)",
+        "Bash(gh *)"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "agents-cleanup",
+      "prompt": "AGENTS.md 내용 좀 정리해줘. 중복되거나 쓸모없는 규칙은 빼고.",
+      "fixture": "agents",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["agents-writer"],
+          "forbidden": ["project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["src/**", "tests/**", "README.md"]}],
+        "gh_calls": [],
+        "transcript": [{"id": "instruction-quality", "judge": "manual", "criterion": "중복·일반론을 줄이고 근거 있는 산술 규칙과 검증 명령을 보존한다."}]
+      }
+    },
+    {
+      "id": "project-guidance",
+      "prompt": "이 프로젝트 처음 맡았는데, 에이전트용 작업 지침이랑 기여 규칙 체계를 잡아줘.",
+      "fixture": "base",
+      "hosts": ["claude", "codex"],
+      "profile": "project",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["project-guide", "agents-writer"],
+          "forbidden": ["codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [{"path": "project-guide/references/completion-review.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["src/**", "tests/**"]}],
+        "gh_calls": [],
+        "transcript": [
+          {"id": "grounded-guidance", "judge": "manual", "criterion": "실제 프로젝트에 맞는 지침을 작성하고 승인 없는 CI/CD 확장을 하지 않는다."},
+          {
+            "id": "fresh-review",
+            "judge": "manual",
+            "criterion": "실제 새 하위 에이전트의 호출·완료 결과와 검수 보고서를 확인한다. 대화 상속이 꺼졌고 최종 스냅샷에 미해결 지적이 없으며 완료 기록에 검수자 이름 또는 세션이 있어야 한다. 이름이나 호출 시도만으로 통과시키지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "id": "architecture-review",
+      "prompt": "src/billing.py 구조가 좀 복잡한데, 책임이랑 모듈 경계를 어떻게 나누는 게 좋을지 검토해줘.",
+      "fixture": "base",
+      "hosts": ["claude", "codex"],
+      "profile": "read",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["codebase-architecture"],
+          "forbidden": ["agents-writer", "project-guide", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [],
+        "transcript": [{"id": "architecture-findings", "judge": "manual", "criterion": "현재 책임·의존 관계에 근거한 구조 검토를 제시한다."}]
+      }
+    },
+    {
+      "id": "bug-fix",
+      "prompt": "src/calc.py의 add 함수가 잘못된 값을 돌려줘. 고쳐줘.",
+      "fixture": "bug",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [{"id": "unit-tests", "argv": ["python3", "-m", "unittest", "discover", "-s", "tests"], "timeout_seconds": 30}],
+      "expected": {
+        "selection": {
+          "required": ["code-wright"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [{"path": "code-wright/references/default-contribution-rules.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["tests/**", "AGENTS.md"]}],
+        "gh_calls": [],
+        "transcript": []
+      }
+    },
+    {
+      "id": "refactor-approval",
+      "prompt": "src/billing.py를 책임별로 나눠서 정리해줘. 동작은 그대로 유지하고.",
+      "fixture": "base",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["code-wright"],
+          "forbidden": ["agents-writer", "project-guide", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [{"path": "code-wright/references/code-placement-review.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [],
+        "transcript": [
+          {
+            "id": "shape-gate",
+            "judge": "manual",
+            "criterion": "제안 트리·각 책임·의존 방향·공유 표면을 설명하고 승인을 요청한 뒤 정지한다. 도구 결과를 포함한 실행 순서에 승인 전 파일·Git 상태 수정이 없어야 한다. 최종 원복만으로 통과시키지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "id": "finish-cleanup",
+      "prompt": "multiply 문서 작업 PR #12가 squash 머지까지 끝났어. 이 작업은 feature/multiply-docs 브랜치와 .worktrees/multiply-docs 워크트리에서 했고, 작업 중에 tmp/pr-body.md랑 scratch/debug_output.json을 만들었어. 마무리하면서 부산물 정리하고 기록도 최종 상태로 맞춰줘.",
+      "fixture": "finish",
+      "hosts": ["claude", "codex"],
+      "profile": "cleanup",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["finish-task"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [
+          {"op": "absent", "paths": ["tmp/pr-body.md", "scratch/debug_output.json"]},
+          {"op": "absent", "paths": [".worktrees/multiply-docs"], "requires": ["git_metadata_write"]},
+          {
+            "op": "unchanged",
+            "paths": [".env", "notes/user-ideas.md", "docs/multiply.md", "src/**", "tests/**", "AGENTS.md", "README.md", ".gitignore"]
+          },
+          {"op": "branch_absent", "name": "feature/multiply-docs", "requires": ["git_metadata_write"]},
+          {"op": "branch_unchanged", "name": "feature/experiment"},
+          {"op": "worktree_absent", "path": ".worktrees/multiply-docs", "requires": ["git_metadata_write"]},
+          {"op": "changed", "path": "docs/progress.md"}
+        ],
+        "gh_calls": [],
+        "transcript": [
+          {
+            "id": "cleanup-order",
+            "judge": "manual",
+            "criterion": "Git 메타데이터 쓰기가 가능하면 성공한 도구 결과로 squash 결과와 작업 변경 전체의 내용 보존을 확인한 뒤 git worktree remove로 등록까지 제거하고 그 뒤 작업 브랜치를 삭제한다. 조상 관계·명령 입력·최종 부재만으로 확인을 대신하지 않는다. sandbox가 쓰기를 막으면 checkout과 브랜치를 보존하고 제한을 보고한다."
+          },
+          {
+            "id": "final-record",
+            "judge": "manual",
+            "criterion": "기존 기록에 머지 완료와 최종 상태를 반영하고 삭제된 임시 본문 링크를 정리한다. 지정 부산물과 작업 checkout/브랜치 외 사용자 작업은 보존한다."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pr-draft",
+      "prompt": "현재 브랜치 변경으로 PR 제목이랑 본문 써줘.",
+      "fixture": "pr",
+      "hosts": ["claude", "codex"],
+      "profile": "read",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["pr-writer"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "skill-reviewer"]
+        },
+        "references": [{"path": "references/prose-editing.md", "coverage": "full"}, {"path": "external/humanizer/SKILL.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [{"op": "forbidden", "command": ["pr", "create"]}, {"op": "forbidden", "command": ["pr", "edit"]}],
+        "transcript": [{"id": "pr-artifact", "judge": "manual", "criterion": "현재 main 대비 변경과 증거에 맞는 한국어 제목·본문을 반환하며 게시하지 않는다."}]
+      }
+    },
+    {
+      "id": "explain-code",
+      "prompt": "src/calc.py의 multiply 함수가 뭘 하는지 설명해줘.",
+      "fixture": "base",
+      "hosts": ["claude", "codex"],
+      "profile": "read",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [],
+        "transcript": [{"id": "explanation", "judge": "manual", "criterion": "multiply의 실제 동작을 정확히 설명한다."}]
+      }
+    },
+    {
+      "id": "general-review",
+      "prompt": "현재 브랜치 변경사항 코드 리뷰해줘.",
+      "fixture": "pr",
+      "hosts": ["claude", "codex"],
+      "profile": "read",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [],
+        "transcript": [{"id": "general-findings", "judge": "manual", "criterion": "현재 변경을 일반 코드 리뷰 범위에서 검토하고 근거 있는 지적 또는 지적 없음을 반환한다."}]
+      }
+    },
+    {
+      "id": "implementation-finish",
+      "prompt": "src/calc.py의 add 함수 구현 마무리해줘.",
+      "fixture": "incomplete",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [{"id": "unit-tests", "argv": ["python3", "-m", "unittest", "discover", "-s", "tests"], "timeout_seconds": 30}],
+      "expected": {
+        "selection": {
+          "required": ["code-wright"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [{"path": "code-wright/references/default-contribution-rules.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["tests/**", "AGENTS.md"]}],
+        "gh_calls": [],
+        "transcript": []
+      }
+    },
+    {
+      "id": "skill-readiness",
+      "prompt": ".claude/skills/agents-writer 스킬 패키지가 배포해도 될 만큼 준비됐는지 검토해줘.",
+      "fixture": "base",
+      "hosts": ["claude"],
+      "profile": "read",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": [],
+          "inspection_only": ["agents-writer"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [],
+        "transcript": [{"id": "explicit-only", "judge": "manual", "criterion": "일반 준비도 검토 요청으로 skill-reviewer를 자동 호출하지 않는다. 읽기 전용 범위를 유지한다."}]
+      }
+    },
+    {
+      "id": "pr-publish",
+      "prompt": "현재 브랜치로 PR 올려줘. 제목이랑 본문도 알아서 써줘.",
+      "fixture": "pr",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["pr-writer"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "skill-reviewer"]
+        },
+        "references": [
+          {"path": "references/prose-editing.md", "coverage": "full"},
+          {"path": "external/humanizer/SKILL.md", "coverage": "full"},
+          {"path": "pr-writer/references/publish.md", "coverage": "full"}
+        ],
+        "file_state": [{"op": "unchanged", "paths": ["src/**", "tests/**", "AGENTS.md", "README.md", ".gitignore"]}],
+        "gh_calls": [
+          {"op": "successful", "command": ["pr", "create"], "flags": ["--draft"]},
+          {"op": "forbidden", "command": ["pr", "ready"]},
+          {"op": "existing_label", "name": "bug"},
+          {
+            "op": "readback",
+            "fields": ["title", "body", "baseRefName", "headRefName", "labels", "isDraft"],
+            "values": {"baseRefName": "main", "headRefName": "fix/add", "isDraft": true, "state": "OPEN"}
+          }
+        ],
+        "transcript": [{"id": "pr-evidence", "judge": "manual", "criterion": "제목·본문과 게시 완료 주장이 실제 변경 및 검증 결과와 일치한다."}]
+      }
+    },
+    {
+      "id": "pr-standalone",
+      "prompt": "현재 브랜치 변경으로 PR 제목이랑 본문 써줘.",
+      "fixture": "pr",
+      "hosts": ["claude"],
+      "profile": "read",
+      "installation": "standalone:pr-writer",
+      "checks": [],
+      "expected": {
+        "selection": {
+          "required": ["pr-writer"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [{"op": "unchanged", "paths": ["**"]}],
+        "gh_calls": [{"op": "forbidden", "command": ["pr", "create"]}, {"op": "forbidden", "command": ["pr", "edit"]}],
+        "transcript": [
+          {
+            "id": "native-editor",
+            "judge": "manual",
+            "criterion": "독립 복사본의 기본 편집 절차로 PR 제목·본문을 완성한다. 공유 참조 부재 확인 후 외부 경로 탐색·설치·fetch로 의존성을 찾지 않는다."
+          }
+        ]
+      }
+    }
+  ]
+}

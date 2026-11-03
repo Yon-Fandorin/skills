@@ -70,4 +70,6 @@ git -C ~/.yon-skills submodule update --init --recursive
 
 에이전트용 지침은 영어, README는 한국어로 작성한다. 한국어 예시와 인용문은 에이전트용 문서에도 넣을 수 있다. 결과물의 언어는 사용자 요청과 대상 저장소의 정책을 따른다.
 
+재사용할 행동 평가 정의와 실행법은 [evals/](evals/README.md)에 두고, 실행 결과·transcript·생성 fixture는 저장소 밖에 보관한다.
+
 문서 작업은 [저장소 지침](AGENTS.md)과 [문서 목록·검토 절차](docs/document-review.md)를 따른다. `lessons.md`에는 재사용할 판단 기준만 남기고, 구체적인 평가 결과·작업 이력은 저장소에 넣지 않는다. 스킬별 실행 규칙과 상세 참조는 각 `SKILL.md`에서 관리한다.

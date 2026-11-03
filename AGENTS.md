@@ -18,6 +18,8 @@ Read each new, changed, or moved file's final content, resolve material findings
 and complete applicable link, metadata, or workflow checks. Recheck affected
 content after further edits. Keep reusable criteria in lessons files; keep project examples, dated evaluation
 results, commit-specific narratives, and task history out of public guidance.
+Reusable behavioral evaluation definitions belong in the top-level `evals/`
+directory; keep dated results, transcripts, and generated fixtures outside the repository.
 
 When independent agents are requested, give each an explicit file set and keep
 their edits disjoint. Reconcile their reports with the final files before the
