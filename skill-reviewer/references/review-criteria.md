@@ -7,6 +7,7 @@ Apply every axis once. A section heading is not required; the behavior is.
 - The name is short enough to recall and specific enough to distinguish from neighboring skills.
 - The frontmatter description states the capability and genuine trigger branches. Distinguish paraphrases of one branch from separate cases and check the boundary with plausible neighboring requests.
 - Invocation policy follows the target harness and repository conventions. Do not infer explicit-only invocation from mutation; place authorization immediately before the protected action instead.
+- When the package supports several hosts, each host's own policy field carries the same invocation intent (for example `disable-model-invocation` in `SKILL.md` for Claude Code and `policy.allow_implicit_invocation` in `agents/openai.yaml` for Codex). A host ignores the other host's field, so setting only one leaves the skill auto-invocable on the other.
 - Inputs, output, stopping point, and non-goal agree across `SKILL.md` and any present UI metadata or catalog text.
 
 ## Focus

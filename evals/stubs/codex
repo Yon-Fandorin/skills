@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Offline Codex CLI stub for dual-agent evaluations.
+
+Records every call to $CODEX_STUB_LOG and answers `--version` and `exec`.
+$CODEX_STUB_MODE=fail makes `exec` fail without writing its -o file.
+A workspace-write `exec` restores the bug fixture's addition so the review
+loop has a real change to inspect. No network or model is used.
+"""
+import json
+import os
+from pathlib import Path
+import sys
+
+args = sys.argv[1:]
+mode = os.environ.get("CODEX_STUB_MODE", "ok")
+
+
+def option(names):
+    for index, value in enumerate(args):
+        if value in names and index + 1 < len(args):
+            return args[index + 1]
+    return None
+
+
+record = dict(argv=args, cwd=os.getcwd(), mode=mode,
+              subcommand=next((value for value in args if not value.startswith("-")), None),
+              sandbox=option(("-s", "--sandbox")), root=option(("-C", "--cd")),
+              output=option(("-o", "--output-last-message")),
+              stdin_is_tty=sys.stdin.isatty())
+log = os.environ.get("CODEX_STUB_LOG")
+if log:
+    with open(log, "a") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+if "--version" in args and record["subcommand"] is None:
+    print("codex-cli 0.0.0-eval-stub")
+    sys.exit(0)
+if record["subcommand"] != "exec":
+    print("eval stub supports only --version and exec", file=sys.stderr)
+    sys.exit(2)
+if mode == "fail":
+    print("ERROR: eval stub simulated an authentication failure (not logged in)", file=sys.stderr)
+    sys.exit(1)
+
+root = Path(record["root"] or os.getcwd())
+if record["sandbox"] == "workspace-write":
+    calc = root / "src/calc.py"
+    if calc.is_file() and "return a - b" in calc.read_text():
+        calc.write_text(calc.read_text().replace("return a - b", "return a + b"))
+    message = ("Implemented: in src/calc.py, add now returns a + b.\n"
+               "Tests: python3 -m unittest discover -s tests passed.\n"
+               "Questions: none\n")
+else:
+    message = ("Findings: none blocking. The problem statement and design match the code; "
+               "the change is limited to add in src/calc.py.\n"
+               "Severity: INFO only. Disposition: NO-CHANGE.\n")
+print("stub: codex exec finished", file=sys.stderr)
+if record["output"]:
+    Path(record["output"]).write_text(message)
+print(message)

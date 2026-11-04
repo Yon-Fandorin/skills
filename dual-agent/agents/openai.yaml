@@ -1,0 +1,6 @@
+interface:
+  display_name: "Dual Agent"
+  short_description: "Split design, implementation, and review across two agents"
+  default_prompt: "Use $dual-agent to run this change as a two-agent workflow in which Claude and Codex split design, implementation, and cross-review under the repository's gate settings."
+policy:
+  allow_implicit_invocation: false

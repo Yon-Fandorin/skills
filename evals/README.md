@@ -53,7 +53,7 @@ legacy 모드는 현재 checkout의 참조 원문을 비교 보조로 사용한�
 
 ## 케이스와 판정
 
-[cases.json](cases.json)의 `schema_version`은 1이다. `profiles`는 sandbox·Claude permission mode·허용 도구를 정의하고, 각 케이스는 `id`, `prompt`, `fixture`, `hosts`, `profile`, `installation`, `checks`, `expected`를 가진다.
+[cases.json](cases.json)의 `schema_version`은 1이다. `profiles`는 sandbox·Claude permission mode·허용 도구를 정의하고, 각 케이스는 `id`, `prompt`, `fixture`, `hosts`, `profile`, `installation`, `checks`, `expected`를 가진다. 선택 필드 `stubs`는 실행기가 `PATH` 맨 앞에 둘 [stubs/](stubs/)의 명령 이름 목록이고, `stub_mode`는 stub의 동작(`ok` 기본값, `fail`)이다.
 
 | 케이스 | 확인할 행동 |
 | --- | --- |
@@ -74,6 +74,10 @@ legacy 모드는 현재 checkout의 참조 원문을 비교 보조로 사용한�
 | `pr-publish` | 같은 실행에서 공유 참조 전체와 Humanizer 로딩·draft 게시·기존 유형 라벨·readback·ready 금지·반환/게시 본문에 PR만 포함 |
 | `pr-revise` | 기존 draft PR의 잘못된 주장을 현재 diff·검증 근거에 맞게 수정·공유 참조와 Humanizer 전체 로딩·edit 후 readback·base/head/라벨/draft 보존·create/ready 금지·PR만 반환/게시 |
 | `pr-standalone` | 독립 pr-writer 복사본은 의존성 탐색 없이 기본 편집 완료 |
+| `dual-first-use` | 프로필 없는 저장소에서 `/dual-agent`는 역할·게이트 설정을 먼저 묻고 멈춤, Codex 호출·파일 변경 없음 |
+| `dual-design-gate` | 기본 프로필에서 읽기 전용 Codex 비판만 호출·절대 경로 산출물·`.planning/` 무시·design 게이트 정지 |
+| `dual-gates-off` | `--gates off`에서 Codex 작업자 구현·구현자에게 검수를 넘기지 않고 Claude 검수·테스트 통과·검수와 요약 산출물·커밋 없음 |
+| `dual-counterpart-failure` | Codex 호출 실패 시 원인 보고 후 정지, 혼자 구현으로 전환하지 않음·커밋 없음 |
 
 `expected`의 판정 표면은 다음과 같다. 알 수 없는 상태/gh 연산은 채점 오류로 처리한다.
 
@@ -97,12 +101,12 @@ Humanizer 로딩 기록의 `load_source`는 파일 읽기의 `file_read` 또는 
 
 PR 케이스의 수동 판정은 반환 산출물과 게시된 제목·본문에 Humanizer의 초안·패턴 목록·재작성 구조가 남지 않고 조건·부정·검증 한계를 보존하는지 확인한다. 각 실행의 필수 조건을 함께 만족한 결과만 집계하며, 파일 대체 케이스는 통과 기준에 합치지 않고 별도 보고한다.
 
-호스트 없이 실행할 기본 검사는 다음과 같다. 모든 fixture 종류(`base`, `agents`, `bug`, `incomplete`, `pr`, `pr-open`, `finish`)를 각각 새 임시 경로에 생성하고, 부모 저장소와 서브모듈의 추적 파일 목록·로컬 링크도 확인한다. 이 검사는 실제 호스트의 선택률이나 문장 품질을 검증하지 않는다.
+호스트 없이 실행할 기본 검사는 다음과 같다. 모든 fixture 종류(`base`, `agents`, `bug`, `dual-profile`, `incomplete`, `pr`, `pr-open`, `finish`)를 각각 새 임시 경로에 생성하고, 부모 저장소와 서브모듈의 추적 파일 목록·로컬 링크도 확인한다. 이 검사는 실제 호스트의 선택률이나 문장 품질을 검증하지 않는다.
 
 ```bash
 bash -n evals/run.sh evals/fixtures.sh
-python3 -m py_compile evals/score.py evals/bin/gh
-rm -r evals/__pycache__ evals/bin/__pycache__
+python3 -m py_compile evals/score.py evals/bin/gh evals/stubs/codex
+rm -r evals/__pycache__ evals/bin/__pycache__ evals/stubs/__pycache__
 python3 evals/score.py --self-check
 ```
 
@@ -119,3 +123,13 @@ python3 evals/score.py --self-check
 Git origin은 각 fixture 내부의 bare 저장소다. 실행 전에 로그인 shell의 `command -v gh`가 stub을 가리키고 origin의 fetch/push 주소가 모두 해당 로컬 경로인지 확인하며, 불일치하면 호스트를 실행하지 않는다. `PATH` 맨 앞에 `evals/bin`을 넣고 `ZDOTDIR`을 빈 디렉터리로 지정한다. 사용자 zsh 시작 파일이 PATH를 다시 정렬해 실제 gh를 선택하는 것을 피하기 위한 설정이다. 시스템 시작 파일이나 다른 shell 설정은 남으므로 사전 확인이 실패할 수 있다.
 
 stub과 로컬 origin은 정상 `gh` 호출과 해당 origin의 Git 작업을 로컬로 돌린다. 절대경로의 실제 gh, curl·Python 등의 다른 네트워크 호출, 새 remote, 사용자 전역 설정·hook까지 차단하는 완전한 네트워크 격리는 아니다. Codex는 항상 `approval_policy="never"`와 케이스의 sandbox를 사용한다. 승인 거부는 통과 증거가 아니다. Claude는 지정한 도구 허용 목록과 호스트의 권한 검사를 사용한다. 더 강한 격리가 필요하면 외부 실행 환경에서 제공한다.
+
+## Dual Agent 케이스
+
+`dual-*` 케이스는 Claude에서만 실행하고, 상대 모델은 [stubs/codex](stubs/codex)로 대체한다. 실행기는 실행마다 `stub-bin/`에 stub 링크를 만들어 `PATH` 맨 앞에 두고, 로그인 shell의 `command -v codex`가 그 링크를 가리키는지 사전 확인한다. stub은 호스트 CLI를 대체할 수 없다. stub은 모든 호출을 출력 디렉터리의 `codex-calls.jsonl`에 기록한다. `exec`의 `-o` 파일에 고정 응답을 쓰며, `workspace-write` 호출이면 `bug` fixture의 덧셈을 복구한다. `fail` 모드는 인증 실패를 흉내 내 `-o` 없이 실패한다. 네트워크와 모델을 쓰지 않으므로 실제 Codex의 판단·sandbox 동작은 검증하지 않는다.
+
+`/dual-agent` 같은 명시 호출은 Skill dispatch 기록을 남기지 않으므로 선택 축은 다른 스킬의 금지만 본다. 스킬이 실행됐는지는 `.planning/dual-agent/` 산출물, stub 호출 기록, 파일·브랜치 상태로 판정한다. 스킬의 상대 호출은 변수 정의·리다이렉션을 포함한 복합 명령이므로 `dual` profile은 `Bash`를 패턴 없이 허용한다. 상대 CLI와 gh는 stub이지만 이 허용 목록은 sandbox가 아니며, 다른 명령은 fixture 밖에도 접근할 수 있다. `dual-profile` fixture는 `bug`에 `version = 1`만 담은 `.dualagent.toml`을 커밋한 것이다.
+
+```bash
+EVAL_TIMEOUT=1800 bash evals/run.sh claude dual-gates-off 1
+```

@@ -17,7 +17,7 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 SKILLS = ("agents-writer", "project-guide", "codebase-architecture", "code-wright",
-          "finish-task", "pr-writer", "skill-reviewer", "humanizer")
+          "dual-agent", "finish-task", "pr-writer", "skill-reviewer", "humanizer")
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 BLOCKED = re.compile(r"approv|permission|can't be checked|cannot be checked|denied", re.I)
 READ_ERROR = re.compile(r"no such file|does not exist|not found|cannot open|can't open|access denied", re.I)

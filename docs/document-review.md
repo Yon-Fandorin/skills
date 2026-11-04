@@ -18,7 +18,7 @@
 | --- | --- |
 | `.gitignore` | 생성 파일·로컬 산출물의 제외 범위 |
 | `.gitmodules` | 외부 원본 URL·서브모듈 경로 |
-| `AGENTS.md` | 소유·언어·검토 범위·기록 보관 규칙 |
+| `AGENTS.md` | 소유·언어·스킬 패키지의 호스트별 메타데이터와 출처·검토 범위·기록 보관 규칙 |
 | `README.md` | 역할·호출·설치·예제·현재 문서 연결·Humanizer 기본 링크와 기존 설치 갱신·설명 로딩 비용·단독 호출·Claude Code 작업 공간/전역 설치와 PR 규칙 |
 | `agents-writer/SKILL.md` | AGENTS.md 작성·검토·범위·근거·완료 기준 |
 | `agents-writer/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
@@ -52,12 +52,19 @@
 | `code-wright/references/typescript-react-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
 | `code-wright/scripts/validate_rust_test_layout.sh` | 실행 조건·결정적 검사·임시 파일·실패 판정 |
 | `docs/document-review.md` | 현재 목록의 누락·중복·절차와 저장소 지침의 일치 |
-| `evals/README.md` | 준비·실행·같은 실행의 필수 조건·dispatch/파일 로딩·설치 불일치 제외·보관 위치·호스트 설정과 격리 한계 |
-| `evals/cases.json` | 선택 경계·비문장 작업의 Humanizer 금지·PR 전용 산출물·기존 PR의 잘못된 주장 수정·edit 후 readback과 메타데이터 보존·파일 대체·docstring만 변경·참조 로딩·수동 의미 판단·환경 전제 |
-| `evals/fixtures.sh` | 새 fixture 생성·로컬 remote·기존 open draft PR의 저장 상태와 push된 head·로컬 Git 비교 필드·squash와 worktree·사용자 파일 보존 대상 |
-| `evals/run.sh` | Humanizer 링크와 파일 대체 설치·이름/실제 경로/본문 해시·Codex 설치 경로와 내용 비교·사전 확인·환경 제약·중단과 결과 보존 |
+| `dual-agent/README.md` | 역할·두 호스트의 호출·설정·옵션·사전 조건·현재 문서 연결 |
+| `dual-agent/SKILL.md` | 명시적 호출 조건·설정 해석 순서·게이트 동작·외부 CLI 실행 규칙·에스컬레이션·완료 기준 |
+| `dual-agent/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
+| `dual-agent/references/claude-calls.md` | Codex 호스트의 `claude -p` 호출 형태·도구 제한·샌드박스 밖 실행 승인·성공 조건과 SKILL.md의 일치 |
+| `dual-agent/references/codex-calls.md` | Claude Code 호스트의 `codex exec` 호출 형태·샌드박스·성공 조건과 SKILL.md의 일치 |
+| `dual-agent/references/profile.md` | 프로필 키·기본값·옵션 매핑·첫 사용 절차·검증 규칙과 SKILL.md의 일치 |
+| `evals/README.md` | 준비·실행·같은 실행의 필수 조건·dispatch/파일 로딩·설치 불일치 제외·보관 위치·호스트 설정과 격리 한계·Dual Agent stub 경계와 판정 근거 |
+| `evals/cases.json` | 선택 경계·비문장 작업의 Humanizer 금지·PR 전용 산출물·기존 PR의 잘못된 주장 수정·edit 후 readback과 메타데이터 보존·파일 대체·docstring만 변경·참조 로딩·수동 의미 판단·환경 전제·stub 필드와 Dual Agent 상태·호출 기록 검사 |
+| `evals/fixtures.sh` | 새 fixture 생성·로컬 remote·기존 open draft PR의 저장 상태와 push된 head·로컬 Git 비교 필드·squash와 worktree·사용자 파일 보존 대상·`dual-profile` 프로필 커밋 |
+| `evals/run.sh` | Humanizer 링크와 파일 대체 설치·이름/실제 경로/본문 해시·Codex 설치 경로와 내용 비교·사전 확인·환경 제약·중단과 결과 보존·케이스별 stub PATH와 호스트 대체 금지·stub 사전 확인 |
 | `evals/score.py` | 실제 stream-json 형태의 합성 주입 fixture·호출/결과/주입 본문 연결·고정 경로와 전체 본문 대조·로딩 출처·설치 불일치 제외·읽기 범위·독립 판정 축·legacy 한계 |
 | `evals/bin/gh` | 네트워크 없는 상태 전이·로컬 Git 비교 필드·성공과 실패 기록·jq 필터와 지원 명령 계약 |
+| `evals/stubs/codex` | 네트워크 없는 호출 기록·`--version`/`exec` 계약·sandbox별 응답과 fixture 변경·실패 모드 |
 | `external/humanizer` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/marketplace.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/plugin.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |

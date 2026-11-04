@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Usage: fixtures.sh <base|agents|bug|incomplete|pr|pr-open|finish> <new-directory>
+# Usage: fixtures.sh <base|agents|bug|dual-profile|incomplete|pr|pr-open|finish> <new-directory>
 set -euo pipefail
 eval_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 fixture_kind=${1:?fixture kind required}
 fixture_dir=${2:?new directory required}
 case "$fixture_kind" in
-  base|agents|bug|incomplete|pr|pr-open|finish) ;;
+  base|agents|bug|dual-profile|incomplete|pr|pr-open|finish) ;;
   *) echo "Unknown fixture: $fixture_kind" >&2; exit 2 ;;
 esac
 python3 - "$fixture_dir" "$eval_dir/.." <<'PY'
@@ -124,7 +124,10 @@ Arithmetic helpers must be pure. Do not add side effects to calc helpers.
 Run the tests. Run `python3 -m unittest discover -s tests` when editing code.
 EOF
 fi
-if [[ $fixture_kind == bug || $fixture_kind == pr || $fixture_kind == pr-open ]]; then
+if [[ $fixture_kind == dual-profile ]]; then
+  printf 'version = 1\n' > .dualagent.toml
+fi
+if [[ $fixture_kind == bug || $fixture_kind == dual-profile || $fixture_kind == pr || $fixture_kind == pr-open ]]; then
   python3 -c 'from pathlib import Path; p=Path("src/calc.py"); p.write_text(p.read_text().replace("return a + b", "return a - b"))'
 elif [[ $fixture_kind == incomplete ]]; then
   python3 -c 'from pathlib import Path; p=Path("src/calc.py"); p.write_text(p.read_text().replace("return a + b", "raise NotImplementedError"))'

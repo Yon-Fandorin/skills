@@ -1,11 +1,23 @@
 # Repository instructions
 
 This repository owns `agents-writer`, `codebase-architecture`, `code-wright`,
-`finish-task`, `pr-writer`, `project-guide`, and `skill-reviewer`. Shared prose
+`dual-agent`, `finish-task`, `pr-writer`, `project-guide`, and `skill-reviewer`. Shared prose
 editing is defined in
 `references/prose-editing.md`; Humanizer's upstream source
 is the pinned `external/humanizer` submodule. Follow the authoring-language
 convention in the root README, including examples in the artifact's language.
+
+## Skill packages
+
+`SKILL.md` follows the
+[Agent Skills specification](https://agentskills.io/specification), and every
+host reads it. `agents/openai.yaml` is UI and invocation metadata that only
+[Codex](https://learn.chatgpt.com/docs/build-skills) reads;
+[Claude Code](https://code.claude.com/docs/en/skills) reads `SKILL.md`
+frontmatter and silently ignores fields it does not recognize. Set an
+explicit-only skill in both places: `disable-model-invocation: true` in
+`SKILL.md` and `policy.allow_implicit_invocation: false` in
+`agents/openai.yaml`.
 
 ## Document review inventory
 

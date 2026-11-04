@@ -11,12 +11,13 @@
 | [PR Writer](pr-writer/README.md) | PR 제목·본문 작성과 편집 | `$pr-writer` |
 | [Finish Task](finish-task/SKILL.md) | 완료한 작업의 부산물 정리와 최종 기록 정비 | `$finish-task` |
 | [Skill Reviewer](skill-reviewer/README.md) | 독립 에이전트의 스킬 구조·검증 근거 검토 | `$skill-reviewer` |
+| [Dual Agent](dual-agent/README.md) | Claude와 Codex의 설계·구현·교차 검수 | `$dual-agent` |
 
 Project Guide는 프로젝트 지침·관리 체계를 정리할 때 자동 선택될 수 있다. 목적·산출물·작업 흐름을 확인하고 근거가 있는 유형의 지침만 적용한다. 유형이 불확실하면 추측한 기여 규칙은 넣지 않고, 필요한 결정만 질문한다. 유형별 작성법은 별도 참조로 확장한다. 결과물은 프레시 컨텍스트 에이전트의 검수를 받고, 실질적인 개선사항을 반영한 최종본에 미해결 지적이 없어야 완료한다. AGENTS.md 작성·검토는 Agents Writer로 연결한다. Git을 쓰는 프로젝트에서는 PR을 드래프트로 생성하며, CI/CD 추가·활성화·확대는 사용자가 명시적으로 승인한 범위에서만 진행한다.
 
 Agents Writer는 AGENTS.md 작성·정리·검토에 맞으면 자동 선택될 수 있다. 기본 지침은 짧게 유지하고, 판단 보조가 필요할 때만 작성 예시·점검 절차를 읽는다. 공식 출처와 도구별 로딩 차이는 별도 참조로 구분한다.
 
-소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture, Code Wright, PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Skill Reviewer는 명시적으로 호출한다. Finish Task는 작업 마무리·부산물 정리 요청에 자동 선택될 수 있으며, 작업 소유권과 기존 승인 범위를 확인하고 최종 기록·참조를 함께 정비한다.
+소프트웨어 유형에서 요청된 구조 설계는 Codebase Architecture, 구현·검증은 Code Wright로 연결한다. Codebase Architecture, Code Wright, PR Writer는 해당 작업에 맞으면 자동 선택될 수 있다. Skill Reviewer와 Dual Agent는 명시적으로 호출한다. Dual Agent는 기본으로 Claude가 설계·검수를, Codex가 구현을 맡는 두 에이전트 흐름이다. Claude Code와 Codex 어느 쪽에서도 실행한다. 역할과 승인 게이트는 저장소의 `.dualagent.toml`이나 호출 옵션으로 정하고, 지정하지 않은 값은 기본값을 따른다. Finish Task는 작업 마무리·부산물 정리 요청에 자동 선택될 수 있으며, 작업 소유권과 기존 승인 범위를 확인하고 최종 기록·참조를 함께 정비한다.
 
 ## 설치
 
@@ -32,6 +33,7 @@ ln -s ~/.yon-skills/code-wright ~/.agents/skills/code-wright
 ln -s ~/.yon-skills/pr-writer ~/.agents/skills/pr-writer
 ln -s ~/.yon-skills/finish-task ~/.agents/skills/finish-task
 ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
+ln -s ~/.yon-skills/dual-agent ~/.agents/skills/dual-agent
 ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
 ```
 
@@ -45,7 +47,7 @@ ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
 공용 Humanizer 없이 각 스킬의 기본 편집 규칙을 사용하려면 [skills CLI](https://github.com/vercel-labs/skills)로 설치할 수 있다. 전체 저장소 설치와 개별 설치 중 하나를 선택한다.
 
 ```bash
-npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer code-wright pr-writer finish-task skill-reviewer
+npx skills@latest add Yon-Fandorin/skills -g -a codex --skill codebase-architecture project-guide agents-writer code-wright pr-writer finish-task skill-reviewer dual-agent
 ```
 
 다른 에이전트에서는 `-a codex`를 해당 에이전트 이름으로 바꾸거나, 이 옵션을 빼고 설치 중 선택한다.
@@ -71,7 +73,7 @@ ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
 
 ## Claude Code
 
-Claude Code에서는 스킬을 Claude Code의 스킬 경로에 연결한다. 연결 범위는 둘 중 하나를 고른다.
+Claude Code에서는 스킬을 Claude Code의 스킬 경로에 연결하고 `/<스킬 이름>`으로 호출한다. 연결 범위는 둘 중 하나를 고른다.
 
 **특정 작업 공간만 (권장):** 작업 공간 폴더를 넘겨 스크립트를 실행한다.
 
@@ -87,7 +89,7 @@ Claude Code에서는 스킬을 Claude Code의 스킬 경로에 연결한다. 연
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in agents-writer codebase-architecture code-wright finish-task pr-writer project-guide skill-reviewer; do ln -s ~/.yon-skills/$s ~/.claude/skills/$s; done
+for s in agents-writer codebase-architecture code-wright dual-agent finish-task pr-writer project-guide skill-reviewer; do ln -s ~/.yon-skills/$s ~/.claude/skills/$s; done
 ln -s ~/.yon-skills/external/humanizer ~/.claude/skills/humanizer
 ```
 

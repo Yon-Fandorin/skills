@@ -50,10 +50,18 @@ else:
     output = Path(tempfile.mkdtemp(prefix=f"{stamp}-{host}-{case_id}-{rep}-", dir=parent)).resolve()
 print(output, flush=True)
 fixture = output / "fixture"
+stubs = case.get("stubs", [])
+if host in stubs or not all((eval_dir / "stubs" / name).is_file() for name in stubs):
+    sys.exit("Stubs must exist under evals/stubs and must not replace the host CLI")
+stub_bin = output / "stub-bin"
+stub_bin.mkdir()
+for name in stubs:
+    (stub_bin / name).symlink_to(eval_dir / "stubs" / name)
 environment = os.environ.copy()
-environment.update(PATH=str(eval_dir / "bin") + os.pathsep + environment.get("PATH", ""),
+environment.update(PATH=os.pathsep.join([str(stub_bin), str(eval_dir / "bin"), environment.get("PATH", "")]),
                    ZDOTDIR=str(output / "zdot"), GH_STUB_LOG=str(output / "gh-calls.jsonl"),
-                   GH_STUB_STATE=str(output / "gh-state.json"), GIT_TERMINAL_PROMPT="0")
+                   GH_STUB_STATE=str(output / "gh-state.json"), GIT_TERMINAL_PROMPT="0",
+                   CODEX_STUB_LOG=str(output / "codex-calls.jsonl"), CODEX_STUB_MODE=case.get("stub_mode", "ok"))
 for key in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR"):
     environment.pop(key, None)
 (output / "zdot").mkdir()
@@ -138,7 +146,8 @@ metadata = dict(schema_version=1, host=host, case=case_id, rep=rep,
                 installation=case["installation"] if host == "claude" else "user-global-as-is",
                 installation_limit="Codex user-scope paths/content are checked; settings and other skill scopes remain active" if host == "codex" else "Claude runs use --setting-sources project,local, so user-scope settings, CLAUDE.md, and skills are not loaded; scopes outside that option can still affect a run",
                 command=command, timeout_seconds=timeout, fixture=str(fixture),
-                environment={key: environment[key] for key in ("PATH", "ZDOTDIR", "GH_STUB_LOG", "GH_STUB_STATE")})
+                environment={key: environment[key] for key in ("PATH", "ZDOTDIR", "GH_STUB_LOG", "GH_STUB_STATE", "CODEX_STUB_LOG", "CODEX_STUB_MODE")},
+                stubs=stubs)
 save("metadata.json", metadata)
 save("cases.json", definitions)
 save("sources.json", scorer["collect_sources"](repo))
@@ -179,15 +188,17 @@ try:
     (output / "gh-calls.jsonl").touch()
     shell = os.environ.get("SHELL", "/bin/zsh" if Path("/bin/zsh").exists() else "/bin/bash")
     resolved = capture([shell, "-lc", "command -v gh"], fixture)
+    stubbed = {name: capture([shell, "-lc", "command -v " + name], fixture) for name in stubs}
     remote = capture(["git", "remote", "get-url", "--all", "origin"], fixture)
     push_remote = capture(["git", "remote", "get-url", "--push", "--all", "origin"], fixture)
     expected_remote = str(fixture / ".remote.git")
     safe = (resolved["exit_code"] == 0 and resolved["stdout"] == str(eval_dir / "bin/gh")
             and remote["exit_code"] == push_remote["exit_code"] == 0
-            and remote["stdout"] == push_remote["stdout"] == expected_remote)
-    save("preflight.json", dict(shell=shell, gh=resolved, remote=remote, push_remote=push_remote, passed=safe))
+            and remote["stdout"] == push_remote["stdout"] == expected_remote
+            and all(found["exit_code"] == 0 and found["stdout"] == str(stub_bin / name) for name, found in stubbed.items()))
+    save("preflight.json", dict(shell=shell, gh=resolved, stubs=stubbed, remote=remote, push_remote=push_remote, passed=safe))
     if not safe:
-        raise RuntimeError("Preflight failed: login-shell gh must be the stub; fetch/push remotes must be the fixture bare repository")
+        raise RuntimeError("Preflight failed: login-shell gh and case stubs must be the stubs; fetch/push remotes must be the fixture bare repository")
     save("before.json", scorer["snapshot"](fixture))
     execution["status"] = "running"
     save("execution.json", execution)

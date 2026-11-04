@@ -100,6 +100,11 @@
         "Bash(rm *)",
         "Bash(gh *)"
       ]
+    },
+    "dual": {
+      "sandbox": "workspace-write",
+      "permission_mode": "acceptEdits",
+      "allowed_tools": ["Read", "Glob", "Grep", "Edit", "Write", "Bash"]
     }
   },
   "cases": [
@@ -511,6 +516,128 @@
         "gh_calls": [],
         "transcript": [
           {"id": "docstring-meaning", "judge": "manual", "criterion": "The docstring accurately describes invoice text, the injected tax-rate function, integer truncation, and returned totals without inventing guarantees. Preserve meaning and all code and identifiers outside the docstring."}
+        ]
+      }
+    },
+    {
+      "id": "dual-first-use",
+      "prompt": "/dual-agent src/calc.py의 add 함수가 잘못된 값을 돌려줘. 고쳐줘.",
+      "fixture": "bug",
+      "hosts": ["claude"],
+      "profile": "dual",
+      "installation": "full",
+      "stubs": ["codex"],
+      "checks": [
+        {"id": "no-codex-exec", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (not e) else 1)\n"], "timeout_seconds": 10}
+      ],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [
+          {"op": "unchanged", "paths": ["src/**", "tests/**", "AGENTS.md", "README.md"]},
+          {"op": "absent", "paths": [".dualagent.toml"]},
+          {"op": "branch_unchanged", "name": "main"}
+        ],
+        "gh_calls": [],
+        "transcript": [
+          {"id": "setup-question", "judge": "manual", "criterion": "프로필이 없으므로 다른 작업 전에 역할 분담과 게이트 3개를 한 번에 묻고, 기본값을 추천 답으로 보여 주며 ask·auto를 한 줄씩 설명한 뒤 멈춘다. 설정 블록 출력이나 시작 확인 같은 다른 질문은 없다."}
+        ]
+      }
+    },
+    {
+      "id": "dual-design-gate",
+      "prompt": "/dual-agent src/calc.py의 add 함수가 잘못된 값을 돌려줘. 고쳐줘.",
+      "fixture": "dual-profile",
+      "hosts": ["claude"],
+      "profile": "dual",
+      "installation": "full",
+      "stubs": ["codex"],
+      "checks": [
+        {"id": "approval-never", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (e and all(any(a.replace('\"','')=='approval_policy=never' for a in x['argv']) for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "read-only-critique-only", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (e and all(x.get('sandbox')=='read-only' for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "absolute-run-paths", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (all(x.get('output','').startswith('/') and '/.planning/dual-agent/' in x.get('output','') for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "design-written", "argv": ["python3", "-c", "import glob,sys\nsys.exit(0 if glob.glob('.planning/dual-agent/*/design.md', recursive=True) else 1)\n"], "timeout_seconds": 10},
+        {"id": "planning-ignored", "argv": ["python3", "-c", "import subprocess,sys\ns=subprocess.run(['git','status','--porcelain','--untracked-files=all'],capture_output=True,text=True).stdout\nsys.exit(1 if '.planning' in s else 0)\n"], "timeout_seconds": 10}
+      ],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [
+          {"op": "unchanged", "paths": ["src/**", "tests/**", "AGENTS.md", "README.md", ".dualagent.toml"]},
+          {"op": "branch_unchanged", "name": "main"}
+        ],
+        "gh_calls": [],
+        "transcript": [
+          {"id": "design-gate", "judge": "manual", "criterion": "설정 블록을 출력하거나 시작 확인을 묻지 않는다. 작은 변경이므로 문제 정의 토론을 건너뛰고, design.md를 쓴 뒤 Codex 비판을 반영하고, design 게이트(ask)에서 설계 요약과 남은 이견을 보여 주며 구현 전에 멈춘다."}
+        ]
+      }
+    },
+    {
+      "id": "dual-gates-off",
+      "prompt": "/dual-agent --gates off src/calc.py의 add 함수가 잘못된 값을 돌려줘. 고쳐줘.",
+      "fixture": "dual-profile",
+      "hosts": ["claude"],
+      "profile": "dual",
+      "installation": "full",
+      "stubs": ["codex"],
+      "checks": [
+        {"id": "unit-tests", "argv": ["python3", "-m", "unittest", "discover", "-s", "tests"], "timeout_seconds": 30},
+        {"id": "approval-never", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (e and all(any(a.replace('\"','')=='approval_policy=never' for a in x['argv']) for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "codex-worker-called", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (any(x.get('sandbox')=='workspace-write' for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "implementer-not-reviewer", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(1 if any('review-' in os.path.basename(x.get('output') or '') for x in e) else 0)\n"], "timeout_seconds": 10},
+        {"id": "no-sandbox-bypass", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (all(x.get('sandbox') in ('read-only','workspace-write') for x in e)) else 1)\n"], "timeout_seconds": 10},
+        {"id": "review-written", "argv": ["python3", "-c", "import glob,sys\nsys.exit(0 if glob.glob('.planning/dual-agent/*/review-r*.md', recursive=True) else 1)\n"], "timeout_seconds": 10},
+        {"id": "summary-written", "argv": ["python3", "-c", "import glob,sys\nsys.exit(0 if glob.glob('.planning/dual-agent/*/summary.md', recursive=True) else 1)\n"], "timeout_seconds": 10},
+        {"id": "planning-ignored", "argv": ["python3", "-c", "import subprocess,sys\ns=subprocess.run(['git','status','--porcelain','--untracked-files=all'],capture_output=True,text=True).stdout\nsys.exit(1 if '.planning' in s else 0)\n"], "timeout_seconds": 10}
+      ],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [
+          {"op": "unchanged", "paths": ["tests/**", "AGENTS.md", ".dualagent.toml"]},
+          {"op": "changed", "path": "src/calc.py"},
+          {"op": "branch_unchanged", "name": "main"}
+        ],
+        "gh_calls": [],
+        "transcript": [
+          {"id": "codex-implements-claude-reviews", "judge": "manual", "criterion": "구현은 Codex 작업자 호출이 맡고 Claude는 src를 직접 고치지 않는다. Claude가 테스트를 돌려 checks 파일로 남기고 diff를 검수한다. --gates off이므로 커밋하지 않고 변경을 작업 트리에 남긴 채 통과·실패·미실행 검사를 나눠 보고한다."}
+        ]
+      }
+    },
+    {
+      "id": "dual-counterpart-failure",
+      "prompt": "/dual-agent --gates off src/calc.py의 add 함수가 잘못된 값을 돌려줘. 고쳐줘.",
+      "fixture": "dual-profile",
+      "hosts": ["claude"],
+      "profile": "dual",
+      "installation": "full",
+      "stubs": ["codex"],
+      "stub_mode": "fail",
+      "checks": [
+        {"id": "codex-exec-attempted", "argv": ["python3", "-c", "import json,os,sys\np=os.environ['CODEX_STUB_LOG']\nc=[json.loads(l) for l in open(p)] if os.path.exists(p) else []\ne=[x for x in c if x.get('subcommand')=='exec']\nsys.exit(0 if (e) else 1)\n"], "timeout_seconds": 10}
+      ],
+      "expected": {
+        "selection": {
+          "required": [],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "code-wright", "finish-task", "pr-writer", "skill-reviewer"]
+        },
+        "references": [],
+        "file_state": [
+          {"op": "unchanged", "paths": ["src/**", "tests/**", "AGENTS.md", "README.md", ".dualagent.toml"]},
+          {"op": "branch_unchanged", "name": "main"}
+        ],
+        "gh_calls": [],
+        "transcript": [
+          {"id": "stop-on-failure", "judge": "manual", "criterion": "Codex 호출 실패의 원인(stderr의 인증 실패)을 보고하고 멈춘다. 같은 명령을 그대로 반복하지 않으며, 묻지 않고 Claude 혼자 구현으로 전환하지 않는다."}
         ]
       }
     }
