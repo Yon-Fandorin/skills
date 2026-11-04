@@ -187,6 +187,25 @@
       }
     },
     {
+      "id": "bug-fix-paraphrase",
+      "prompt": "덧셈 결과가 틀리게 나와. 바로잡아줘.",
+      "fixture": "bug",
+      "hosts": ["claude", "codex"],
+      "profile": "write",
+      "installation": "full",
+      "checks": [{"id": "unit-tests", "argv": ["python3", "-m", "unittest", "discover", "-s", "tests"], "timeout_seconds": 30}],
+      "expected": {
+        "selection": {
+          "required": ["code-wright"],
+          "forbidden": ["agents-writer", "project-guide", "codebase-architecture", "finish-task", "pr-writer", "skill-reviewer", "humanizer"]
+        },
+        "references": [{"path": "code-wright/references/default-contribution-rules.md", "coverage": "full"}],
+        "file_state": [{"op": "unchanged", "paths": ["tests/**", "AGENTS.md"]}],
+        "gh_calls": [],
+        "transcript": []
+      }
+    },
+    {
       "id": "refactor-approval",
       "prompt": "src/billing.py를 책임별로 나눠서 정리해줘. 동작은 그대로 유지하고.",
       "fixture": "base",

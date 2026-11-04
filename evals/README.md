@@ -61,6 +61,7 @@ legacy 모드는 현재 checkout의 참조 원문을 비교 보조로 사용한�
 | `project-guidance` | project-guide와 agents-writer 선택, 실제 fresh-context 하위 에이전트 검수와 검수자 기록 |
 | `architecture-review` | codebase-architecture 선택, 수정 없이 구조 검토 |
 | `bug-fix` | 한 줄 버그 수정도 code-wright 선택, 산술 동작 복구 |
+| `bug-fix-paraphrase` | 파일·함수 이름 없이 증상만 말한 같은 버그 수정 요청에도 code-wright 선택, 산술 동작 복구 |
 | `refactor-approval` | code-wright 선택, 구조 판단을 위한 codebase-architecture 로딩 허용, 구조 제안 뒤 승인 전 정지·수정 없음 |
 | `finish-cleanup` | finish-task 선택, 지정 부산물 정리·사용자 작업 보존·squash 내용 확인·worktree 등록 제거·최종 기록 정비 |
 | `pr-draft` | pr-writer 선택, 같은 실행에서 공유 참조 전체와 Humanizer 로딩, PR만 반환 |
