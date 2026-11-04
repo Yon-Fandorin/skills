@@ -12,6 +12,7 @@ import re
 import shlex
 import subprocess
 import sys
+import tempfile
 
 
 HERE = Path(__file__).resolve().parent
@@ -38,6 +39,7 @@ class Call:
 @dataclass
 class Transcript:
     calls: list = field(default_factory=list)
+    skill_bodies: list = field(default_factory=list)
     models: set = field(default_factory=set)
     final: str = ""
     terminal: bool = False
@@ -63,6 +65,7 @@ def text_content(value):
 
 def parse_transcript(path, host):
     transcript, pending = Transcript(), {}
+    injection_call = None
     for index, line in enumerate(Path(path).read_text(errors="replace").splitlines()):
         if not line.strip():
             continue
@@ -70,11 +73,14 @@ def parse_transcript(path, host):
             event = json.loads(line)
         except ValueError:
             transcript.malformed += 1
+            injection_call = None
             continue
         if not isinstance(event, dict):
             transcript.malformed += 1
+            injection_call = None
             continue
         if host == "claude":
+            preceding_call, injection_call = injection_call, None
             message = event.get("message")
             message = message if isinstance(message, dict) else {}
             if message.get("model"):
@@ -84,6 +90,7 @@ def parse_transcript(path, host):
                     transcript.models.add(event["model"])
                 transcript.settings = {key: event[key] for key in ("permissionMode", "tools", "skills") if key in event}
             content = message.get("content", [])
+            launches = []
             for block in content if isinstance(content, list) else []:
                 if not isinstance(block, dict):
                     continue
@@ -96,8 +103,23 @@ def parse_transcript(path, host):
                     call = pending.get(block.get("tool_use_id"))
                     if call:
                         call.output = text_content(block.get("content", ""))
-                        call.error = bool(block.get("is_error"))
+                        launch_result = event.get("tool_use_result")
+                        call.error = bool(block.get("is_error")) or (isinstance(launch_result, dict) and launch_result.get("success") is False)
                         call.complete, call.result_index = True, index
+                        if call.name == "Skill":
+                            launches.append(call)
+                elif (block.get("type") == "text" and event.get("type") == "user"
+                      and event.get("isSynthetic") is True):
+                    match = re.fullmatch(r"Base directory for this skill: ([^\n]+)\n\n(.*)",
+                                         block.get("text", ""), re.S)
+                    if match:
+                        transcript.skill_bodies.append(dict(
+                            call_id=preceding_call.id if preceding_call else None,
+                            base_directory=match[1], body=match[2], index=index))
+            # The injected user message carries no tool ID. Only the immediately
+            # preceding, unambiguous Skill result establishes its provenance.
+            if len(launches) == 1:
+                injection_call = launches[0]
             if event.get("type") == "result":
                 transcript.final = event.get("result", "")
                 transcript.terminal = event.get("subtype") == "success" and not event.get("is_error", False)
@@ -281,15 +303,63 @@ def read_evidence(transcript, sources):
             else:
                 status = "unknown"
             evidence.append(dict(path=path, source=key, status=status, call_id=call.id,
+                                 load_source="file_read",
                                  call_index=call.index, result_index=call.result_index,
                                  ranges=ranges if status in ("full", "partial") else [], total_lines=total,
                                  detail=("\n".join(error_lines or diagnostics)[:200]) if status in ("blocked", "failed") else ""))
+    return evidence + dispatch_evidence(transcript, sources)
+
+
+def skill_body(text):
+    return re.sub(r"\A---\r?\n.*?\r?\n---(?:\r?\n|\Z)", "", text, count=1, flags=re.S).strip()
+
+
+def skill_succeeded(call):
+    name = call.inputs.get("skill", call.inputs.get("command", ""))
+    return call.complete and not call.error and call.output.strip() == "Launching skill: " + name
+
+
+def dispatch_evidence(transcript, sources):
+    key = "external/humanizer/SKILL.md"
+    source = sources.get(key, {})
+    evidence = []
+    for call in transcript.calls:
+        if call.name != "Skill" or call.inputs.get("skill", call.inputs.get("command")) != "humanizer":
+            continue
+        bodies = [body for body in transcript.skill_bodies if body["call_id"] == call.id]
+        status, detail = "unknown", "missing linked injected body or source real path"
+        total = len(source.get("text", "").strip().splitlines())
+        if not call.complete:
+            detail = "missing dispatch result"
+        elif not skill_succeeded(call):
+            status = "blocked" if BLOCKED.search(call.output) else "failed"
+            detail = "dispatch did not succeed"
+        elif len(bodies) != 1:
+            status, detail = "failed", "missing or ambiguous linked injected body"
+        elif source.get("realpath") and source.get("text"):
+            base = Path(bodies[0]["base_directory"])
+            injected_body = bodies[0]["body"]
+            args = call.inputs.get("args")
+            if isinstance(args, str):
+                injected_body = injected_body.removesuffix("\n\n\nARGUMENTS: " + args)
+            if not base.is_absolute() or base.resolve() != Path(source["realpath"]).resolve().parent:
+                status, detail = "failed", "injected base directory differs from pinned source"
+            elif injected_body.strip() != skill_body(source["text"]):
+                status, detail = "partial", "injected body does not match the full source body"
+            else:
+                status, detail = "full", "linked injected body matches pinned source without frontmatter"
+        evidence.append(dict(path=bodies[0]["base_directory"] if len(bodies) == 1 else key,
+                             source=key, status=status, load_source="skill_dispatch", call_id=call.id,
+                             call_index=call.index, result_index=call.result_index,
+                             injection_index=bodies[0]["index"] if len(bodies) == 1 else None,
+                             ranges=[[1, total]] if status == "full" else [], total_lines=total, detail=detail))
     return evidence
 
 
 def reference_result(assertion, evidence, complete):
     key = assertion["path"]
-    reads = [read for read in evidence if read["source"] == key]
+    reads = [read for read in evidence if read["source"] == key
+             and (not assertion.get("load_source") or read["load_source"] == assertion["load_source"])]
     covered = {line for read in reads for start, end in read["ranges"] for line in range(start, end + 1)}
     total = max((read["total_lines"] for read in reads), default=0)
     if total and len(covered) == total:
@@ -324,7 +394,7 @@ def selection_results(expected, transcript, reads):
         if call.name == "Skill":
             name = call.inputs.get("skill", call.inputs.get("command", "")).split(":")[-1]
             attempted.add(name)
-            if call.complete and not call.error and "Launching skill:" in call.output:
+            if skill_succeeded(call):
                 selected.add(name)
             elif not call.complete or BLOCKED.search(call.output) or not call.error:
                 uncertain.add(name)
@@ -503,7 +573,11 @@ def score(case, transcript, sources, before=None, after=None, calls=None, state=
         functional.append(result("capture", "unknown", "missing/unsupported events, unmatched tool result, or non-JSON output"))
     axes = dict(selection=selection, references=dict(status=rollup(references), assertions=references),
                 functional=dict(status=rollup(functional), assertions=functional))
-    return dict(case=case["id"], status=rollup([result(axis, value["status"]) for axis, value in axes.items()]),
+    installation = (metadata or {}).get("installation_check", {})
+    mismatch = installation.get("status") == "install_mismatch"
+    return dict(case=case["id"], status="install_mismatch" if mismatch else rollup([result(axis, value["status"]) for axis, value in axes.items()]),
+                regression_eligible=not mismatch and ((metadata or {}).get("host") != "codex" or installation.get("status") == "match"),
+                installation_check=installation,
                 axes=axes, reads=reads, observed_models=sorted(transcript.models) or ["unknown"],
                 capture=dict(complete=transcript.complete, malformed_lines=transcript.malformed,
                              unsupported_items=sorted(transcript.unsupported_items),
@@ -511,6 +585,7 @@ def score(case, transcript, sources, before=None, after=None, calls=None, state=
 
 
 def self_check():
+    dispatch_self_check()
     sources = {"references/prose-editing.md": {"text": "# Shared prose\nOne\nTwo\nThree\nFour\nFive"}}
     failed = Call("failed", "Bash", {"command": "cat wrong/references/prose-editing.md; true"}, 0,
                   "wrong/references/prose-editing.md: No such file or directory", False, True, 1, 0)
@@ -598,7 +673,87 @@ def self_check():
     assert gh_result(assertion, [write, first, dict(argv=["pr", "edit"], exit_code=1), second], state)["status"] == "pass"
     assert gh_result(assertion, [write, view(state), view({"title": "stale"})], state)["status"] == "fail"
     assert gh_result(dict(assertion, values={"isDraft": False}), [write, first, second], state)["status"] == "fail"
-    print("self-check: read coverage, selection certainty, and merged PR readback regressions passed")
+    print("self-check: linked skill injection, install exclusion, read coverage, selection certainty, and merged PR readback regressions passed")
+
+
+def dispatch_self_check():
+    # Synthetic stream-json envelopes mirror Skill launch and body injection.
+    # The source is deliberately tiny and independent of the upstream text.
+    with tempfile.TemporaryDirectory(prefix="skills-dispatch-") as directory:
+        root = Path(directory)
+        pinned = root / "external/humanizer"
+        pinned.mkdir(parents=True)
+        alias = root / "humanizer-link"
+        alias.symlink_to(pinned, target_is_directory=True)
+        text = "---\nname: humanizer\ndescription: Synthetic editor\n---\n\n# Editor\n\nKeep conditions.\nKeep negation.\n"
+        key = "external/humanizer/SKILL.md"
+        sources = {key: dict(text=text, realpath=str(pinned / "SKILL.md"))}
+        body = skill_body(text)
+        path = root / "transcript.jsonl"
+
+        def events(base=alias, injected=body, error=False, output="Launching skill: humanizer", success=True, name="humanizer", args=None):
+            inputs = dict(skill=name)
+            if args is not None:
+                inputs["args"] = args
+            return [
+                dict(type="assistant", message=dict(role="assistant", content=[
+                    dict(type="tool_use", id="dispatch-1", name="Skill", input=inputs)])),
+                dict(type="user", message=dict(role="user", content=[
+                    dict(type="tool_result", tool_use_id="dispatch-1", content=output, is_error=error)]),
+                     tool_use_result=dict(success=success, commandName=name)),
+                dict(type="user", message=dict(role="user", content=[
+                    dict(type="text", text=f"Base directory for this skill: {base}\n\n{injected}")]), isSynthetic=True),
+            ]
+
+        args = "Load the guidance only.\nPreserve the caller's output."
+        suffix = "\n\n\nARGUMENTS: " + args
+        variants = [
+            ("success", events(), True),
+            ("matching arguments", events(injected=body + suffix, args=args), True),
+            ("arguments without appended block", events(args=args), True),
+            ("empty arguments", events(injected=body + "\n\n\nARGUMENTS: ", args=""), True),
+            ("mismatched arguments", events(injected=body + suffix, args="Different request"), False),
+            ("missing input arguments", events(injected=body + suffix), False),
+            ("arguments whitespace differs", events(injected=body + suffix, args=args + " "), False),
+            ("repeated arguments block", events(injected=body + suffix + suffix, args=args), False),
+            ("nontrailing arguments block", events(injected=body + suffix + "\nExtra text", args=args), False),
+            ("different arguments separator", events(injected=body + "\n\nARGUMENTS: " + args, args=args), False),
+            ("partial body with arguments", events(injected="# Editor" + suffix, args=args), False),
+            ("other path", events(base=root / "other/humanizer"), False),
+            ("body mismatch", events(injected=body.replace("negation", "assertions")), False),
+            ("partial body", events(injected="# Editor\n\nKeep conditions."), False),
+            ("frontmatter included", events(injected=text), False),
+            ("failed dispatch", events(error=True, success=False, output="Skill failed"), False),
+            ("blocked dispatch", events(error=True, success=False, output="Permission denied"), False),
+            ("failure metadata", events(success=False), False),
+            ("namespace differs", events(name="plugin:humanizer", output="Launching skill: plugin:humanizer"), False),
+        ]
+        unlinked = events()
+        unlinked.insert(2, dict(type="assistant", message=dict(role="assistant", content=[dict(type="text", text="Unrelated turn")])))
+        variants.append(("unrelated body elsewhere", unlinked, False))
+        variants.append(("body without dispatch", events()[2:], False))
+        ordinary = events()
+        ordinary[2].pop("isSynthetic")
+        variants.append(("ordinary user body", ordinary, False))
+        for label, fixture, loaded in variants:
+            fixture.append(dict(type="result", subtype="success", result="Synthetic artifact"))
+            path.write_text("\n".join(json.dumps(event) for event in fixture) + "\n")
+            transcript = parse_transcript(path, "claude")
+            reads = read_evidence(transcript, sources)
+            assertion = dict(path=key, coverage="full")
+            assert (reference_result(assertion, reads, transcript.complete)["status"] == "pass") == loaded, (label, reads)
+            if loaded:
+                assert reads[0]["call_id"] == "dispatch-1" and reads[0]["load_source"] == "skill_dispatch", reads
+                assert reference_result(dict(assertion, load_source="file_read"), reads, True)["status"] == "fail"
+                fallback = Call("fallback", "Read", dict(file_path=key), 4, text, False, True, 5)
+                transcript.calls.append(fallback)
+                assert reference_result(dict(assertion, load_source="file_read"), read_evidence(transcript, sources), True)["status"] == "pass"
+        case = dict(id="synthetic", expected=dict(selection={}, references=[], file_state=[], gh_calls=[], transcript=[]))
+        for status, eligible in (("match", True), ("install_mismatch", False), ("unknown", False)):
+            report = score(case, Transcript(terminal=True), {}, metadata=dict(host="codex", installation_check=dict(status=status)))
+            assert report["regression_eligible"] == eligible, report
+            if status == "install_mismatch":
+                assert report["status"] == "install_mismatch", report
 
 
 def main():
@@ -638,7 +793,7 @@ def main():
         calls = [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else None
         report = score(case, transcript, sources, before, after, calls, load_json(args.run / "gh-state.json"), load_json(args.run / "execution.json", {}), metadata)
     else:
-        report = score(case, transcript, collect_sources(HERE.parent))
+        report = score(case, transcript, collect_sources(HERE.parent), metadata=dict(host=host))
         report["legacy_limits"] = "Current checkout text is a comparison aid, not proof of the historical source revision. Fixture state, child traces and run settings may be missing."
     print(json.dumps(report, ensure_ascii=False, indent=2))
 

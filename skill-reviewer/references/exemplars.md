@@ -53,4 +53,4 @@ Use only for skills whose output is the next skill or workflow path. It demonstr
 - When a required source cannot be read, keep local findings and mark calibration incomplete. Use `Review incomplete` until the required comparison is complete.
 - Treat upstream changes as new evidence, not an automatic requirement to rewrite local skills.
 
-Source map checked on 2026-10-12 against `mattpocock/skills` at `49dd158d1076134a641b33efb035946536778336`. Select the source for each new review; this map is not a substitute for reading it.
+Source map checked on 2026-11-03 against `mattpocock/skills` at `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`. Select the source for each new review; this map is not a substitute for reading it.

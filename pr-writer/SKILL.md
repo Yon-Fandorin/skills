@@ -42,9 +42,9 @@ Before drafting, use the shell to resolve this `SKILL.md` through installation
 symlinks (for example `realpath`); a file reader that normalizes `..` before
 following the skill-directory symlink can miss the shared files. Relative to
 its real directory, read [shared prose editing](../references/prose-editing.md)
-and, when available, the Humanizer file it resolves. If the shared editor is
-unavailable in a standalone installation, apply step 3's native pass after
-drafting without fetching a dependency.
+in full for the editing contract. If the shared reference is unavailable in a
+standalone installation, use step 3's native pass without fetching a
+dependency.
 
 Then read only the closest type's reviewer questions:
 [bugfix](templates/bugfix.md), [feature](templates/feature.md),
@@ -104,15 +104,18 @@ Write a concise outcome-oriented title using the repository's convention.
 **Complete when:** the problem, behavior, cause, evidence, and merge implications
 are easy to find; required template items and material type questions each have
 one home; comparisons and critical order are visible in the chosen structure;
-optional headings use the resolved language.
+optional headings use the resolved language; the shared editing contract is
+read, or the native-pass path is established.
 
 ## 3. Edit and reconcile
 
-Select reviewer-relevant facts before the prose pass. Apply the Humanizer
-instructions loaded before drafting to the selected title and body in embedded
-mode, returning only the final artifact; the shared prose-editing reference owns
-Humanizer resolution and language-aware editing. If the shared editor was
-unavailable, perform the native pass below.
+Select reviewer-relevant facts before the prose pass. Then call the Skill tool
+with "humanizer" on the final title and body in embedded mode under the shared
+editing contract, returning only the final artifact.
+
+When no `humanizer` skill is installed or the host has no Skill tool, read the
+pinned Humanizer file named in the shared reference and apply it the same way.
+When the shared reference was unavailable, perform the native pass below.
 
 Read the title and body as a reviewer encountering the change for the first
 time. Make the problem, resulting behavior, and review implications easy to
@@ -141,21 +144,21 @@ invalidate a check, obtain relevant evidence within the authorized scope or
 report the current gap. Keep inspection, tests, and live checks distinct where
 confidence depends on them; do not restore discarded operational detail.
 
-If this pass changes substantive prose, apply the prose editor again and
-recheck the affected claims. Repeat the affected pass if the comparison changes
-before delivery. Keep this audit internal unless requested.
+If this pass changes substantive prose, apply the loaded editor or native pass
+again and recheck the affected claims. Repeat the affected pass if the comparison
+changes before delivery. Keep this audit internal unless requested.
 
 **Complete when:** the opening states the problem and outcome, each section
 answers a distinct reviewer question, conditions are easy to compare, and every
 retained consequential statement matches the final comparison. The reader can
 understand the change without reconstructing the work or review log. The
-shared prose pass ran on the final text, or the native pass ran because the
-shared editor was unavailable. Return the edited artifact; show
+`humanizer` skill, or the pinned Humanizer file, ran on the final title and body
+under the shared editing contract, or the native pass ran. Return the edited artifact; show
 intermediate versions or an editing audit only when requested.
 
 ## 4. Return or publish
 
-For a draft, return the title and body with material unresolved inputs.
+For a draft, return the title and body edited in step 3, with material unresolved inputs.
 When PR creation or modification is authorized, read
 [publishing](references/publish.md) for branch, scope, label, and readback checks.
 

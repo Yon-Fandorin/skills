@@ -32,9 +32,12 @@ ln -s ~/.yon-skills/code-wright ~/.agents/skills/code-wright
 ln -s ~/.yon-skills/pr-writer ~/.agents/skills/pr-writer
 ln -s ~/.yon-skills/finish-task ~/.agents/skills/finish-task
 ln -s ~/.yon-skills/skill-reviewer ~/.agents/skills/skill-reviewer
+ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
 ```
 
 설치 후 Codex에서 위 호출 이름을 사용한다. 목록에 나타나지 않으면 Codex를 다시 시작한다.
+
+전체 설치는 PR Writer와 다른 스킬이 고정된 Humanizer를 스킬로 불러올 수 있도록 `humanizer` 링크를 기본으로 포함한다. 설치된 스킬의 이름·설명은 항상 컨텍스트에 포함되므로 그만큼 토큰을 사용한다. Humanizer는 문장 편집 작업에 단독으로 선택될 수도 있다. 텍스트를 붙여 넣어 단독으로 사용하면 초안·남은 패턴·최종 수정본을 반환하고, 다른 스킬이 불러올 때는 해당 스킬의 출력 형식을 따른다.
 
 <details>
 <summary>개별 스킬만 설치하기</summary>
@@ -58,13 +61,31 @@ git -C ~/.yon-skills pull --ff-only
 git -C ~/.yon-skills submodule update --init --recursive
 ```
 
+기존 전체 설치에 `humanizer` 링크가 없으면 아래 명령으로 추가한다. 링크가 없어도 다른 스킬은 공유 참조에 따라 고정된 Humanizer 파일을 직접 읽을 수 있다.
+
+```bash
+ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
+```
+
 기존 `codewright` 설치는 [설치](#설치) 안내에 따라 `code-wright`로 다시 연결하거나 설치하고 이전 항목을 제거한다. 심볼릭 링크 설치에서는 저장소를 갱신해도 `~/.agents/skills/codewright` 링크가 자동으로 바뀌지 않는다. 프로젝트 설정 파일 `.codewright.toml`은 계속 사용한다.
 
 ## Humanizer
 
 문장 편집에는 공용 서브모듈 [Humanizer](https://github.com/blader/humanizer)를 사용한다. 적용 방식과 한국어 편집 기준은 [공통 편집 참조](references/prose-editing.md)를 따른다.
 
-`$humanizer`로 단독 호출하려면 `~/.yon-skills/external/humanizer`도 도구의 스킬 경로에 연결한다.
+전체 설치는 `humanizer`를 스킬로 함께 연결하므로 `$humanizer`로 단독 호출할 수도 있다.
+
+Claude Code에서 PR Writer를 쓸 때는 스킬을 `~/.claude/skills`에 연결하고, 사용자 지침(`~/.claude/CLAUDE.md`)에 아래 규칙을 추가하는 것을 권장한다. PR Writer 안의 지시만으로는 Claude가 Humanizer 불러오기를 건너뛰는 경우가 있었다. 이 규칙을 두면 PR을 쓸 때 Humanizer 스킬을 먼저 호출한다.
+
+```bash
+mkdir -p ~/.claude/skills
+ln -s ~/.yon-skills/pr-writer ~/.claude/skills/pr-writer
+ln -s ~/.yon-skills/external/humanizer ~/.claude/skills/humanizer
+```
+
+```text
+When writing or revising a pull request title or body, invoke the `humanizer` skill before drafting and apply it in embedded mode to the final text.
+```
 
 ## 관리
 

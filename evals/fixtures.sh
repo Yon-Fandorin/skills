@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Usage: fixtures.sh <base|agents|bug|incomplete|pr|finish> <new-directory>
+# Usage: fixtures.sh <base|agents|bug|incomplete|pr|pr-open|finish> <new-directory>
 set -euo pipefail
 eval_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 fixture_kind=${1:?fixture kind required}
 fixture_dir=${2:?new directory required}
 case "$fixture_kind" in
-  base|agents|bug|incomplete|pr|finish) ;;
+  base|agents|bug|incomplete|pr|pr-open|finish) ;;
   *) echo "Unknown fixture: $fixture_kind" >&2; exit 2 ;;
 esac
 python3 - "$fixture_dir" "$eval_dir/.." <<'PY'
@@ -124,14 +124,14 @@ Arithmetic helpers must be pure. Do not add side effects to calc helpers.
 Run the tests. Run `python3 -m unittest discover -s tests` when editing code.
 EOF
 fi
-if [[ $fixture_kind == bug || $fixture_kind == pr ]]; then
+if [[ $fixture_kind == bug || $fixture_kind == pr || $fixture_kind == pr-open ]]; then
   python3 -c 'from pathlib import Path; p=Path("src/calc.py"); p.write_text(p.read_text().replace("return a + b", "return a - b"))'
 elif [[ $fixture_kind == incomplete ]]; then
   python3 -c 'from pathlib import Path; p=Path("src/calc.py"); p.write_text(p.read_text().replace("return a + b", "raise NotImplementedError"))'
 fi
 git add .
 git commit -qm 'Add arithmetic and billing helpers'
-if [[ $fixture_kind == pr ]]; then
+if [[ $fixture_kind == pr || $fixture_kind == pr-open ]]; then
   git checkout -qb fix/add
   python3 -c 'from pathlib import Path; p=Path("src/calc.py"); p.write_text(p.read_text().replace("return a - b", "return a + b"))'
   git add src/calc.py
@@ -186,4 +186,26 @@ git init -q --bare --initial-branch=main --template= .remote.git
 git remote add origin "$PWD/.remote.git"
 git push -q origin main
 git branch --set-upstream-to=origin/main main >/dev/null
+if [[ $fixture_kind == pr-open ]]; then
+  git push -qu origin fix/add
+  python3 - <<'PY'
+import json, subprocess
+def git(*args):
+    return subprocess.check_output(["git", *args], text=True)
+base_oid = git("rev-parse", "main^{commit}").strip()
+head_oid = git("rev-parse", "fix/add^{commit}").strip()
+paths = git("diff", "--name-only", "-z", base_oid + "..." + head_oid, "--").split("\0")
+commits = git("rev-list", base_oid + ".." + head_oid, "--").splitlines()
+state = dict(number=7, url="https://github.example.invalid/eval/calc/pull/7",
+             state="OPEN", title="덧셈 버그 수정",
+             body="## 변경 사항\n\n음수 입력을 별도로 처리하는 로직을 추가했습니다.\n\n"
+                  "## 검증\n\n뺄셈 테스트를 추가하고 전체 테스트 통과를 확인했습니다.\n",
+             isDraft=True, baseRefName="main", headRefName="fix/add",
+             labels=[{"name": "bug"}], files=[{"path": path} for path in paths if path],
+             commits=[{"oid": oid} for oid in commits], headRefOid=head_oid,
+             diff=git("diff", base_oid + "..." + head_oid, "--"))
+with open(".git/eval-pr.json", "w") as handle:
+    json.dump(state, handle, ensure_ascii=False)
+PY
+fi
 printf '%s\n' "$PWD"

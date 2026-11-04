@@ -6,14 +6,27 @@ the task, output language, evidence, required format, and completion criteria.
 
 ## Resolve the shared editor
 
-Read [Humanizer](../external/humanizer/SKILL.md) relative to this file's real
-directory, the skills repository's `references/`, and use its embedded mode.
-Do not search the consuming project's Git root or depend on a fixed home path. The parent
-repository's gitlink selects the editor revision. Keep upstream files unchanged;
-updates are a separate maintenance task. When the shared guide or submodule is
-unavailable in a standalone installation, perform the calling skill's native
-editing pass. Editing must complete without installing or fetching a dependency
-during the user's writing task.
+The parent repository's gitlink selects the Humanizer revision in
+`external/humanizer`. Resolve paths relative to this file's real directory,
+the skills repository's `references/`. Do not search the consuming project's
+Git root or depend on a fixed home path.
+
+Run the `humanizer` skill on the text to edit, in embedded mode within the
+calling workflow. The full install links that skill to this repository's
+pinned `external/humanizer`. The calling skill keeps control of the workflow
+and output. Reuse the guidance when it is already fully loaded in the session.
+
+When no `humanizer` skill is installed or the host cannot dispatch skills, read
+[Humanizer](../external/humanizer/SKILL.md) in full relative to this file's real
+directory and apply it the same way. A partial read is not a load. When neither
+is available, perform the calling skill's native editing pass; this also
+applies when the shared guide or submodule is unavailable in a standalone
+installation.
+
+Apply the loaded guidance in embedded mode under the caller's contract below.
+Keep upstream files unchanged; updates are a separate maintenance task.
+Editing must complete without installing or fetching a dependency during the
+user's writing task.
 
 ## Keep the caller's contract
 

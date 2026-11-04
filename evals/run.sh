@@ -75,11 +75,45 @@ def revision(directory):
         return "unknown"
     return capture(["git", "-C", str(directory), "rev-parse", "HEAD"])["stdout"] or "unknown"
 
+def installation_record(name, directory, expected):
+    path, source = directory / "SKILL.md", expected / "SKILL.md"
+    record = compare_file(name, path, source)
+    record.update(realpath=str(directory.resolve()), expected_realpath=str(expected.resolve()))
+    if path.is_file():
+        record["body_sha256"] = hashlib.sha256(scorer["skill_body"](path.read_text()).encode()).hexdigest()
+    return record
+
+def compare_file(name, path, expected):
+    record = dict(name=name, path=str(path), realpath=str(path.resolve()),
+                  expected_realpath=str(expected.resolve()), path_match=path.resolve() == expected.resolve(),
+                  content_match=False, sha256=None, error=None)
+    try:
+        record["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        record["expected_sha256"] = hashlib.sha256(expected.read_bytes()).hexdigest()
+        record["content_match"] = record["sha256"] == record["expected_sha256"]
+    except OSError as exc:
+        record["error"] = str(exc)
+    return record
+
+def codex_installation():
+    # Inspect the documented user scope without changing global configuration.
+    root = Path.home() / ".agents/skills"
+    records = []
+    for name in ("pr-writer", "code-wright", "humanizer"):
+        expected = repo / ("external/humanizer" if name == "humanizer" else name)
+        records.append(installation_record(name, root / name, expected))
+    for name in ("pr-writer", "code-wright"):
+        reference = (root / name).resolve().parent / "references/prose-editing.md"
+        records.append(compare_file(name + ":prose-editing", reference, repo / "references/prose-editing.md"))
+    matched = all(record["path_match"] and record["content_match"] for record in records)
+    return dict(status="match" if matched else "install_mismatch", records=records,
+                scope=str(root), limit="User-scope paths/content only; host skill selection, disabled skills, plugins, and other scopes are not verified")
+
 model = os.environ.get("EVAL_MODEL", "sonnet" if host == "claude" else "gpt-6.1-sol")
 effort = os.environ.get("EVAL_REASONING_EFFORT", "high") if host == "codex" else "host-default"
 git_metadata_restricted = host == "codex" and profile["sandbox"] in ("read-only", "workspace-write")
 command = (["claude", "-p", "--model", model, "--no-session-persistence", "--output-format", "stream-json", "--verbose",
-            "--max-turns", "80", "--permission-mode", profile["permission_mode"], "--add-dir", str(repo),
+            "--max-turns", "80", "--setting-sources", "project,local", "--permission-mode", profile["permission_mode"], "--add-dir", str(repo),
             "--allowedTools", *profile["allowed_tools"]] if host == "claude" else
            ["codex", "exec", "-c", 'approval_policy="never"', "-m", model,
             "-c", "model_reasoning_effort=" + json.dumps(effort),
@@ -102,7 +136,7 @@ metadata = dict(schema_version=1, host=host, case=case_id, rep=rep,
                 permission_mode=profile["permission_mode"] if host == "claude" else None,
                 allowed_tools=profile["allowed_tools"] if host == "claude" else "user Codex configuration",
                 installation=case["installation"] if host == "claude" else "user-global-as-is",
-                installation_limit="Codex user-installed skills/settings are not isolated or verified against this checkout" if host == "codex" else "Claude global skills/settings/hooks can still affect a run",
+                installation_limit="Codex user-scope paths/content are checked; settings and other skill scopes remain active" if host == "codex" else "Claude runs use --setting-sources project,local, so user-scope settings, CLAUDE.md, and skills are not loaded; scopes outside that option can still affect a run",
                 command=command, timeout_seconds=timeout, fixture=str(fixture),
                 environment={key: environment[key] for key in ("PATH", "ZDOTDIR", "GH_STUB_LOG", "GH_STUB_STATE")})
 save("metadata.json", metadata)
@@ -130,8 +164,16 @@ try:
             shutil.copytree(repo / name, skills_dir / name, symlinks=False)
         else:
             for name in scorer["SKILLS"]:
-                if name != "humanizer":
-                    (skills_dir / name).symlink_to(repo / name, target_is_directory=True)
+                if name == "humanizer" and case["installation"] == "full-no-humanizer-skill":
+                    continue
+                target = repo / ("external/humanizer" if name == "humanizer" else name)
+                (skills_dir / name).symlink_to(target, target_is_directory=True)
+        metadata["installed_skills"] = [installation_record(
+            path.name, path, repo / ("external/humanizer" if path.name == "humanizer" else path.name))
+            for path in sorted(skills_dir.iterdir())]
+    else:
+        metadata["installation_check"] = codex_installation()
+    save("metadata.json", metadata)
     initial_pr = fixture / ".git/eval-pr.json"
     save("gh-state.json", json.loads(initial_pr.read_text()) if initial_pr.exists() else None)
     (output / "gh-calls.jsonl").touch()

@@ -19,7 +19,7 @@
 | `.gitignore` | 생성 파일·로컬 산출물의 제외 범위 |
 | `.gitmodules` | 외부 원본 URL·서브모듈 경로 |
 | `AGENTS.md` | 소유·언어·검토 범위·기록 보관 규칙 |
-| `README.md` | 역할·호출·설치·예제·현재 문서 연결 |
+| `README.md` | 역할·호출·설치·예제·현재 문서 연결·Humanizer 기본 링크와 기존 설치 갱신·설명 로딩 비용·단독 호출·Claude Code 권장 규칙 |
 | `agents-writer/SKILL.md` | AGENTS.md 작성·검토·범위·근거·완료 기준 |
 | `agents-writer/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
 | `agents-writer/references/drafting-support.md` | 선택형 작성 보조·근거별 선별·예시·정지 조건 |
@@ -52,11 +52,11 @@
 | `code-wright/references/typescript-react-code-shape.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
 | `code-wright/scripts/validate_rust_test_layout.sh` | 실행 조건·결정적 검사·임시 파일·실패 판정 |
 | `docs/document-review.md` | 현재 목록의 누락·중복·절차와 저장소 지침의 일치 |
-| `evals/README.md` | 준비·실행·판정·보관 위치·호스트 설정과 격리 한계 |
-| `evals/cases.json` | 선택 경계·참조 로딩·상태 검사·수동 판단·Git 쓰기 등 환경 전제 |
-| `evals/fixtures.sh` | 새 fixture 생성·로컬 remote·squash와 worktree·사용자 파일 보존 대상 |
-| `evals/run.sh` | 설치 방식·사전 확인·effort와 권한·도구 설정·환경 제약 기록·중단과 결과 보존 |
-| `evals/score.py` | 호출과 결과 연결·읽기 범위와 후속 실패 구분·환경별 적용 여부·독립 판정 축·legacy 한계 |
+| `evals/README.md` | 준비·실행·같은 실행의 필수 조건·dispatch/파일 로딩·설치 불일치 제외·보관 위치·호스트 설정과 격리 한계 |
+| `evals/cases.json` | 선택 경계·비문장 작업의 Humanizer 금지·PR 전용 산출물·기존 PR의 잘못된 주장 수정·edit 후 readback과 메타데이터 보존·파일 대체·docstring만 변경·참조 로딩·수동 의미 판단·환경 전제 |
+| `evals/fixtures.sh` | 새 fixture 생성·로컬 remote·기존 open draft PR의 저장 상태와 push된 head·로컬 Git 비교 필드·squash와 worktree·사용자 파일 보존 대상 |
+| `evals/run.sh` | Humanizer 링크와 파일 대체 설치·이름/실제 경로/본문 해시·Codex 설치 경로와 내용 비교·사전 확인·환경 제약·중단과 결과 보존 |
+| `evals/score.py` | 실제 stream-json 형태의 합성 주입 fixture·호출/결과/주입 본문 연결·고정 경로와 전체 본문 대조·로딩 출처·설치 불일치 제외·읽기 범위·독립 판정 축·legacy 한계 |
 | `evals/bin/gh` | 네트워크 없는 상태 전이·로컬 Git 비교 필드·성공과 실패 기록·jq 필터와 지원 명령 계약 |
 | `external/humanizer` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
 | `external/humanizer/.claude-plugin/marketplace.json` | 고정 외부 원본·패키지 연결·로컬 통합 경계 보존 |
@@ -82,7 +82,7 @@
 | `project-guide/references/project-types.md` | 유형 선택 조건·미확인 유형·확장 기준 |
 | `project-guide/references/project-types/software.md` | 소프트웨어 기여 지침·개발 스킬 연결·검증 범위 |
 | `pr-writer/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
-| `pr-writer/SKILL.md` | 호출 조건·입력 권위·참조 분기·권한·완료 기준 |
+| `pr-writer/SKILL.md` | 호출 조건·입력 권위·초안 전 편집 계약 읽기·편집 단계의 Skill 도구 humanizer 호출과 고정 파일 대체·사실 재확인·독립 설치 대체 경로·권한·완료 기준 |
 | `pr-writer/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
 | `pr-writer/references/editing-examples.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
 | `pr-writer/references/lessons.md` | 재사용할 판단 기준·근거 범위; 특정 사례·실행 이력 제외 |
@@ -94,7 +94,7 @@
 | `pr-writer/templates/infra.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
 | `pr-writer/templates/performance.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
 | `pr-writer/templates/refactor.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
-| `references/prose-editing.md` | 본문의 역할·관련 SKILL 참조 조건·권한·완료 기준 |
+| `references/prose-editing.md` | 고정 원본·humanizer 스킬 실행과 고정 파일 전체 읽기 대체·세션 재사용·embedded mode·호출자 계약·설치/가져오기 금지 |
 | `skill-reviewer/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
 | `skill-reviewer/SKILL.md` | 호출·독립 검수·실행 근거 검사·판정 범위·미실행 구분 |
 | `skill-reviewer/agents/openai.yaml` | 스킬 이름·표시·prompt·호출 정책의 일치 |
