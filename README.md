@@ -69,23 +69,41 @@ ln -s ~/.yon-skills/external/humanizer ~/.agents/skills/humanizer
 
 기존 `codewright` 설치는 [설치](#설치) 안내에 따라 `code-wright`로 다시 연결하거나 설치하고 이전 항목을 제거한다. 심볼릭 링크 설치에서는 저장소를 갱신해도 `~/.agents/skills/codewright` 링크가 자동으로 바뀌지 않는다. 프로젝트 설정 파일 `.codewright.toml`은 계속 사용한다.
 
+## Claude Code
+
+Claude Code에서는 스킬을 Claude Code의 스킬 경로에 연결한다. 연결 범위는 둘 중 하나를 고른다.
+
+**특정 작업 공간만 (권장):** 작업 공간 폴더를 넘겨 스크립트를 실행한다.
+
+```bash
+~/.yon-skills/scripts/link-claude-workspace.sh --pr-rule ~/project/my-workspace
+```
+
+스크립트는 작업 공간 폴더와 그 아래의 Git 저장소·worktree마다 `.claude/skills`에 이 저장소의 스킬과 `humanizer` 링크를 만들고, 각 저장소의 `.git/info/exclude`에 추가해 커밋되지 않게 한다. Claude Code는 하위 Git 저장소 안에서 상위 폴더의 `.claude/skills`를 읽지 않으므로 저장소마다 링크가 필요하다. 반면 상위 폴더의 `.claude/CLAUDE.md`는 하위 저장소에도 적용되므로, `--pr-rule`은 아래 PR 규칙을 작업 공간 폴더의 `.claude/CLAUDE.md`에 한 번만 추가한다.
+
+작업 공간에 새 저장소나 worktree를 추가하면 같은 명령을 다시 실행한다. 이미 있는 항목은 건너뛰며, `--dry-run`으로 바뀔 내용을 먼저 확인할 수 있다. 작업 공간 밖에 만든 worktree에는 링크와 규칙이 적용되지 않는다.
+
+**모든 프로젝트:** `~/.claude/skills`에 연결하고 사용자 지침(`~/.claude/CLAUDE.md`)에 PR 규칙을 추가한다.
+
+```bash
+mkdir -p ~/.claude/skills
+for s in agents-writer codebase-architecture code-wright finish-task pr-writer project-guide skill-reviewer; do ln -s ~/.yon-skills/$s ~/.claude/skills/$s; done
+ln -s ~/.yon-skills/external/humanizer ~/.claude/skills/humanizer
+```
+
+PR 규칙: PR Writer 안의 지시만으로는 Claude가 Humanizer 불러오기를 건너뛰는 경우가 있었다. 이 규칙을 두면 PR을 쓸 때 Humanizer 스킬을 먼저 호출한다.
+
+```text
+When writing or revising a pull request title or body, invoke the `humanizer` skill before drafting and apply it in embedded mode to the final text.
+```
+
 ## Humanizer
 
 문장 편집에는 공용 서브모듈 [Humanizer](https://github.com/blader/humanizer)를 사용한다. 적용 방식과 한국어 편집 기준은 [공통 편집 참조](references/prose-editing.md)를 따른다.
 
 전체 설치는 `humanizer`를 스킬로 함께 연결하므로 `$humanizer`로 단독 호출할 수도 있다.
 
-Claude Code에서 PR Writer를 쓸 때는 스킬을 `~/.claude/skills`에 연결하고, 사용자 지침(`~/.claude/CLAUDE.md`)에 아래 규칙을 추가하는 것을 권장한다. PR Writer 안의 지시만으로는 Claude가 Humanizer 불러오기를 건너뛰는 경우가 있었다. 이 규칙을 두면 PR을 쓸 때 Humanizer 스킬을 먼저 호출한다.
-
-```bash
-mkdir -p ~/.claude/skills
-ln -s ~/.yon-skills/pr-writer ~/.claude/skills/pr-writer
-ln -s ~/.yon-skills/external/humanizer ~/.claude/skills/humanizer
-```
-
-```text
-When writing or revising a pull request title or body, invoke the `humanizer` skill before drafting and apply it in embedded mode to the final text.
-```
+Claude Code에서 PR을 쓸 때 Humanizer를 안정적으로 쓰게 하는 규칙은 [Claude Code](#claude-code)를 참고한다.
 
 ## 관리
 

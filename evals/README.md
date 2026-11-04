@@ -39,7 +39,7 @@ python3 evals/score.py /path/to/new-run
 
 Codex reasoning effort는 `EVAL_REASONING_EFFORT`로 정하며 기본값은 `high`다. 실행기는 `-c model_reasoning_effort=...`로 명시하고 메타데이터의 `reasoning_effort`에 기록한다. Claude에는 effort 플래그를 추가하지 않으며 `host-default`로 기록한다. Claude 실행에는 이 환경변수를 적용하지 않는다.
 
-출력에는 정의 사본, prompt, 메타데이터, 참조 원문 사본, 초기·최종 파일/Git 스냅샷, gh 호출/상태, transcript와 stderr, 실행 상태, fixture가 남는다. 메타데이터는 checkout 커밋과 dirty 여부, Humanizer 실제 커밋과 gitlink, 정의 해시, CLI 버전, 모델, 권한·도구·설치 설정을 담는다. 비밀이 담길 수 있는 전체 환경변수나 사용자 설정 파일은 복사하지 않는다. fixture와 로그의 내용은 호스트 행동에 따라 달라지므로 결과 공유 전 내용을 확인한다.
+출력에는 정의 사본, prompt, 메타데이터, 참조 원문 사본, 초기·최종 파일/Git 스냅샷, gh 호출/상태, transcript와 stderr, 실행 상태, fixture가 남는다. 메타데이터는 checkout 커밋과 dirty 여부, Humanizer 실제 커밋과 gitlink, 정의 해시, CLI 버전, 모델, 권한·도구·설치 설정을 담는다. 비밀이 담길 수 있는 전체 환경변수나 사용자 설정 파일은 복사하지 않는다. fixture와 로그의 내용은 호스트 행동에 따라 달라지므로 결과 공유 전 내용을 확인한다. Claude는 실행 위치마다 `~/.claude/projects/` 아래에 기록 폴더를 만들므로, fixture 경로로 생긴 기록은 평가 후 필요 없으면 지운다.
 
 기존 transcript만 읽을 때는 호스트와 케이스를 지정한다.
 

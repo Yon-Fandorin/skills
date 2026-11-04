@@ -19,7 +19,7 @@
 | `.gitignore` | 생성 파일·로컬 산출물의 제외 범위 |
 | `.gitmodules` | 외부 원본 URL·서브모듈 경로 |
 | `AGENTS.md` | 소유·언어·검토 범위·기록 보관 규칙 |
-| `README.md` | 역할·호출·설치·예제·현재 문서 연결·Humanizer 기본 링크와 기존 설치 갱신·설명 로딩 비용·단독 호출·Claude Code 권장 규칙 |
+| `README.md` | 역할·호출·설치·예제·현재 문서 연결·Humanizer 기본 링크와 기존 설치 갱신·설명 로딩 비용·단독 호출·Claude Code 작업 공간/전역 설치와 PR 규칙 |
 | `agents-writer/SKILL.md` | AGENTS.md 작성·검토·범위·근거·완료 기준 |
 | `agents-writer/agents/openai.yaml` | 스킬 이름·표시·호출 정책의 일치 |
 | `agents-writer/references/drafting-support.md` | 선택형 작성 보조·근거별 선별·예시·정지 조건 |
@@ -94,6 +94,7 @@
 | `pr-writer/templates/infra.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
 | `pr-writer/templates/performance.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
 | `pr-writer/templates/refactor.md` | 유형별 검토 질문·선택 섹션·저장소 템플릿 우선 |
+| `scripts/link-claude-workspace.sh` | 작업 공간과 하위 Git 저장소·worktree 탐색·스킬 목록 자동 수집·기존 항목 보존·info/exclude 추가·PR 규칙 1회 추가·dry-run |
 | `references/prose-editing.md` | 고정 원본·humanizer 스킬 실행과 고정 파일 전체 읽기 대체·세션 재사용·embedded mode·호출자 계약·설치/가져오기 금지 |
 | `skill-reviewer/README.md` | 역할·호출·설치·예제·현재 문서 연결 |
 | `skill-reviewer/SKILL.md` | 호출·독립 검수·실행 근거 검사·판정 범위·미실행 구분 |
